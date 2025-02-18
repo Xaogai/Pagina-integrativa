@@ -125,4 +125,17 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionCheckAccess()
+    {
+        $userId = 1; // ID del usuario que quieres verificar
+        $permission = 'manageUsers'; // Permiso a verificar
+
+        if (Yii::$app->authManager->checkAccess($userId, $permission)) {
+            return "✅ El usuario tiene permisos para gestionar usuarios.";
+        } else {
+            return "❌ El usuario NO tiene permisos.";
+        }
+    }
+
 }

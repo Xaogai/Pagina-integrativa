@@ -26,6 +26,13 @@ $config = [
             ],
         ],
         'db' => $db,
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+            'defaultRoles' => ['guest', 'user'],
+            'assignmentFile' => '@app/rbac/assignments.php',
+            'itemFile' => '@app/rbac/items.php',
+            'ruleFile' => '@app/rbac/rules.php',
+        ],
     ],
     'params' => $params,
     /*
