@@ -49,18 +49,14 @@ $config = [
             'itemFile' => '@app/rbac/items.php',
             'ruleFile' => '@app/rbac/rules.php',
         ],
-
+        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
             'rules' => [
-                'alumno' => 'alumno/alumno/index',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>', // Regla general
+            ],
         ],
-],
-
-
+        */
     ],
     'params' => $params,
 ];
