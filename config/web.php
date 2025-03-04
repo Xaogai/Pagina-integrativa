@@ -56,6 +56,7 @@ $config = [
             'enableStrictParsing' => false,
             'rules' => [
                 'alumno' => 'alumno/alumno/index',
+                'alumno/datosgenerales' => 'alumno/alumno/datos-generales', 
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>', // Regla general
         ],
 ],
