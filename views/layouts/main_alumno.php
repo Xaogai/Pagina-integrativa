@@ -30,6 +30,17 @@ $this->beginPage();
                     <li><a href="<?= Url::to(['practicas/carta-termino']) ?>">Carta de Término</a></li>
                 </ul>
             </li>
+            <!-- Agregar el botón de logout aquí -->
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <li class="logout-button">
+                    <?php
+                    // Formulario para logout
+                    echo Html::beginForm(['site/logout'], 'post');
+                    echo Html::submitButton('Cerrar sesión', ['class' => 'btn btn-danger']);
+                    echo Html::endForm();
+                    ?>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 

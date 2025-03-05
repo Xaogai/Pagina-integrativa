@@ -72,19 +72,31 @@ public function actionIndex()
      */
     public function actionLogin()
     {
+        // Si el usuario ya está logueado, redirige a la página principal
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            return $this->redirect(['/alumno']);// Redirige a /alumno/index
         }
-
+    
+        // Si no está logueado, procede con el proceso de login
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->redirect(['/alumno']);// Redirige al índice del alumno después del login exitoso
         }
-
+    
+        // Si el login falla, limpia la contraseña y vuelve a mostrar el formulario de login
         $model->password = '';
         return $this->render('login', [
             'model' => $model,
         ]);
+    
+
+        /* $user = Yii::$app->user->identity;
+if ($user->role === 'admin') {
+    return $this->redirect(['admin/dashboard']);
+} else {
+    return $this->redirect(['site/index']);
+}
+*/
     }
 
     /**
