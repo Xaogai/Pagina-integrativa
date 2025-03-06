@@ -13,13 +13,14 @@ use Yii;
  * @property int $id_semestre
  * @property int $id_ciclo
  * @property string $area
- * @property string $fecha_inicio
- * @property string $fecha_termino
+ * @property string $fecha_inicio_servicio
+ * @property string $fecha_termino_servicio
  * @property string $horario
  * @property string $fecha_emision
  * @property string $fecha_aceptacion
+ * @property string $fecha_termino
  *
- * @property Alumno $alumno
+ * @property Alumnos $alumno
  * @property CicloEscolar $ciclo
  * @property Semestre $semestre
  */
@@ -48,15 +49,14 @@ class CartaAceptacion extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => null],
-            [['id_cartaaceptacion', 'id_alumno', 'id_semestre', 'id_ciclo', 'area', 'fecha_inicio', 'fecha_termino', 'horario', 'fecha_emision', 'fecha_aceptacion'], 'required'],
-            [['id_cartaaceptacion', 'id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
+            [['id_alumno', 'id_semestre', 'id_ciclo', 'area', 'fecha_inicio_servicio', 'fecha_termino_servicio', 'horario', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
+            [['id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
             [['status'], 'string'],
-            [['fecha_inicio', 'fecha_termino', 'fecha_emision', 'fecha_aceptacion'], 'safe'],
+            [['fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
             [['area'], 'string', 'max' => 100],
             [['horario'], 'string', 'max' => 200],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
-            [['id_cartaaceptacion'], 'unique'],
-            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumno::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
+            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
             [['id_semestre'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestre' => 'id_semestre']],
             [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
         ];
@@ -74,11 +74,12 @@ class CartaAceptacion extends \yii\db\ActiveRecord
             'id_semestre' => 'Id Semestre',
             'id_ciclo' => 'Id Ciclo',
             'area' => 'Area',
-            'fecha_inicio' => 'Fecha Inicio',
-            'fecha_termino' => 'Fecha Termino',
+            'fecha_inicio_servicio' => 'Fecha Inicio Servicio',
+            'fecha_termino_servicio' => 'Fecha Termino Servicio',
             'horario' => 'Horario',
             'fecha_emision' => 'Fecha Emision',
             'fecha_aceptacion' => 'Fecha Aceptacion',
+            'fecha_termino' => 'Fecha Termino',
         ];
     }
 
@@ -89,7 +90,7 @@ class CartaAceptacion extends \yii\db\ActiveRecord
      */
     public function getAlumno()
     {
-        return $this->hasOne(Alumno::class, ['id_alumno' => 'id_alumno']);
+        return $this->hasOne(Alumnos::class, ['id_alumno' => 'id_alumno']);
     }
 
     /**

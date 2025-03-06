@@ -10,11 +10,11 @@ use Yii;
  * @property int $id_ciclo
  * @property string $ciclo
  *
- * @property Alumno[] $alumnos
+ * @property Alumnos[] $alumnos
  * @property CartaAceptacion[] $cartaAceptacions
  * @property CartaPresentacion[] $cartaPresentacions
  * @property CartaTermino[] $cartaTerminos
- * @property HojaDato[] $hojaDatos
+ * @property HojaDatos[] $hojaDatos
  */
 class CicloEscolar extends \yii\db\ActiveRecord
 {
@@ -34,10 +34,8 @@ class CicloEscolar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_ciclo', 'ciclo'], 'required'],
-            [['id_ciclo'], 'integer'],
+            [['ciclo'], 'required'],
             [['ciclo'], 'string', 'max' => 100],
-            [['id_ciclo'], 'unique'],
         ];
     }
 
@@ -59,7 +57,7 @@ class CicloEscolar extends \yii\db\ActiveRecord
      */
     public function getAlumnos()
     {
-        return $this->hasMany(Alumno::class, ['id_ciclo' => 'id_ciclo']);
+        return $this->hasMany(Alumnos::class, ['id_ciclo' => 'id_ciclo']);
     }
 
     /**
@@ -99,7 +97,7 @@ class CicloEscolar extends \yii\db\ActiveRecord
      */
     public function getHojaDatos()
     {
-        return $this->hasMany(HojaDato::class, ['id_ciclo' => 'id_ciclo']);
+        return $this->hasMany(HojaDatos::class, ['id_ciclo' => 'id_ciclo']);
     }
 
 }

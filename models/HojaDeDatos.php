@@ -16,14 +16,15 @@ use Yii;
  * @property int $id_formato
  * @property string $fecha_emision
  * @property string $fecha_aceptacion
+ * @property string $fecha_termino
  *
- * @property Alumno $alumno
+ * @property Alumnos $alumno
  * @property CicloEscolar $ciclo
  * @property Empresa $empresa
  * @property FondoCbt $formato
  * @property Semestre $semestre
  */
-class HojaDatos extends \yii\db\ActiveRecord
+class HojaDeDatos extends \yii\db\ActiveRecord
 {
 
     /**
@@ -48,12 +49,12 @@ class HojaDatos extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => null],
-            [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato', 'fecha_emision', 'fecha_aceptacion'], 'required'],
+            [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
             [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'integer'],
             [['status'], 'string'],
-            [['fecha_emision', 'fecha_aceptacion'], 'safe'],
+            [['fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
-            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumno::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
+            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
             [['id_empresa'], 'exist', 'skipOnError' => true, 'targetClass' => Empresa::class, 'targetAttribute' => ['id_empresa' => 'id_empresa']],
             [['id_semestre'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestre' => 'id_semestre']],
             [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
@@ -76,6 +77,7 @@ class HojaDatos extends \yii\db\ActiveRecord
             'id_formato' => 'Id Formato',
             'fecha_emision' => 'Fecha Emision',
             'fecha_aceptacion' => 'Fecha Aceptacion',
+            'fecha_termino' => 'Fecha Termino',
         ];
     }
 
@@ -86,7 +88,7 @@ class HojaDatos extends \yii\db\ActiveRecord
      */
     public function getAlumno()
     {
-        return $this->hasOne(Alumno::class, ['id_alumno' => 'id_alumno']);
+        return $this->hasOne(Alumnos::class, ['id_alumno' => 'id_alumno']);
     }
 
     /**

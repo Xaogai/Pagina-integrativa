@@ -5,14 +5,14 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "grado".
+ * This is the model class for table "institucion".
  *
- * @property int $id_grado
+ * @property int $id_institucion
  * @property string $nombre
  *
- * @property Alumno[] $alumnos
+ * @property Alumnos[] $alumnos
  */
-class Grado extends \yii\db\ActiveRecord
+class Instituciones extends \yii\db\ActiveRecord
 {
 
 
@@ -21,7 +21,7 @@ class Grado extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'grado';
+        return 'institucion';
     }
 
     /**
@@ -30,10 +30,8 @@ class Grado extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_grado', 'nombre'], 'required'],
-            [['id_grado'], 'integer'],
-            [['nombre'], 'string', 'max' => 50],
-            [['id_grado'], 'unique'],
+            [['nombre'], 'required'],
+            [['nombre'], 'string', 'max' => 80],
         ];
     }
 
@@ -43,7 +41,7 @@ class Grado extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_grado' => 'Id Grado',
+            'id_institucion' => 'Id Institucion',
             'nombre' => 'Nombre',
         ];
     }
@@ -55,7 +53,7 @@ class Grado extends \yii\db\ActiveRecord
      */
     public function getAlumnos()
     {
-        return $this->hasMany(Alumno::class, ['id_grado' => 'id_grado']);
+        return $this->hasMany(Alumnos::class, ['id_institucion' => 'id_institucion']);
     }
 
 }

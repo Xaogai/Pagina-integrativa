@@ -14,7 +14,7 @@ use Yii;
  * @property string|null $carta_aceptacion
  * @property string|null $carta_termino
  *
- * @property Alumno $alumno
+ * @property Alumnos $alumno
  */
 class CartasAlumno extends \yii\db\ActiveRecord
 {
@@ -35,11 +35,10 @@ class CartasAlumno extends \yii\db\ActiveRecord
     {
         return [
             [['hoja_datos', 'carta_presentacion', 'carta_aceptacion', 'carta_termino'], 'default', 'value' => null],
-            [['id_cartasalumno', 'id_alumno'], 'required'],
-            [['id_cartasalumno', 'id_alumno'], 'integer'],
+            [['id_alumno'], 'required'],
+            [['id_alumno'], 'integer'],
             [['hoja_datos', 'carta_presentacion', 'carta_aceptacion', 'carta_termino'], 'string', 'max' => 100],
-            [['id_cartasalumno'], 'unique'],
-            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumno::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
+            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
         ];
     }
 
@@ -65,7 +64,7 @@ class CartasAlumno extends \yii\db\ActiveRecord
      */
     public function getAlumno()
     {
-        return $this->hasOne(Alumno::class, ['id_alumno' => 'id_alumno']);
+        return $this->hasOne(Alumnos::class, ['id_alumno' => 'id_alumno']);
     }
 
 }

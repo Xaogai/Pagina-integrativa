@@ -31,10 +31,7 @@ class Cualidades extends \yii\db\ActiveRecord
     {
         return [
             [['cualidades'], 'default', 'value' => null],
-            [['id_cualidades'], 'required'],
-            [['id_cualidades'], 'integer'],
             [['cualidades'], 'string'],
-            [['id_cualidades'], 'unique'],
         ];
     }
 

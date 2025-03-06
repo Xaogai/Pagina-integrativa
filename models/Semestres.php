@@ -10,13 +10,13 @@ use Yii;
  * @property int $id_semestre
  * @property string $nombre
  *
- * @property Alumno[] $alumnos
+ * @property Alumnos[] $alumnos
  * @property CartaAceptacion[] $cartaAceptacions
  * @property CartaPresentacion[] $cartaPresentacions
  * @property CartaTermino[] $cartaTerminos
- * @property HojaDato[] $hojaDatos
+ * @property HojaDatos[] $hojaDatos
  */
-class Semestre extends \yii\db\ActiveRecord
+class Semestres extends \yii\db\ActiveRecord
 {
 
 
@@ -34,10 +34,8 @@ class Semestre extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_semestre', 'nombre'], 'required'],
-            [['id_semestre'], 'integer'],
+            [['nombre'], 'required'],
             [['nombre'], 'string', 'max' => 50],
-            [['id_semestre'], 'unique'],
         ];
     }
 
@@ -59,7 +57,7 @@ class Semestre extends \yii\db\ActiveRecord
      */
     public function getAlumnos()
     {
-        return $this->hasMany(Alumno::class, ['id_semestreactual' => 'id_semestre']);
+        return $this->hasMany(Alumnos::class, ['id_semestreactual' => 'id_semestre']);
     }
 
     /**
@@ -99,7 +97,7 @@ class Semestre extends \yii\db\ActiveRecord
      */
     public function getHojaDatos()
     {
-        return $this->hasMany(HojaDato::class, ['id_semestre' => 'id_semestre']);
+        return $this->hasMany(HojaDatos::class, ['id_semestre' => 'id_semestre']);
     }
 
 }

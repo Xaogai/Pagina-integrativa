@@ -12,7 +12,7 @@ use Yii;
  * @property string|null $status
  *
  * @property CartaPresentacion[] $cartaPresentacions
- * @property HojaDato[] $hojaDatos
+ * @property HojaDatos[] $hojaDatos
  */
 class FondoCBT extends \yii\db\ActiveRecord
 {
@@ -38,12 +38,10 @@ class FondoCBT extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => null],
-            [['id_fondo', 'fondo_imagen'], 'required'],
-            [['id_fondo'], 'integer'],
+            [['fondo_imagen'], 'required'],
             [['status'], 'string'],
             [['fondo_imagen'], 'string', 'max' => 100],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
-            [['id_fondo'], 'unique'],
         ];
     }
 
@@ -76,7 +74,7 @@ class FondoCBT extends \yii\db\ActiveRecord
      */
     public function getHojaDatos()
     {
-        return $this->hasMany(HojaDato::class, ['id_formato' => 'id_fondo']);
+        return $this->hasMany(HojaDatos::class, ['id_formato' => 'id_fondo']);
     }
 
 

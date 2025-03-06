@@ -11,8 +11,8 @@ use Yii;
  * @property string $nombre
  * @property int $id_cualidades
  *
- * @property Alumno[] $alumnos
- * @property Cualidade $cualidades
+ * @property Alumnos[] $alumnos
+ * @property Cualidades $cualidades
  */
 class Carrera extends \yii\db\ActiveRecord
 {
@@ -32,11 +32,10 @@ class Carrera extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_carrera', 'nombre', 'id_cualidades'], 'required'],
-            [['id_carrera', 'id_cualidades'], 'integer'],
+            [['nombre', 'id_cualidades'], 'required'],
+            [['id_cualidades'], 'integer'],
             [['nombre'], 'string', 'max' => 50],
-            [['id_carrera'], 'unique'],
-            [['id_cualidades'], 'exist', 'skipOnError' => true, 'targetClass' => Cualidade::class, 'targetAttribute' => ['id_cualidades' => 'id_cualidades']],
+            [['id_cualidades'], 'exist', 'skipOnError' => true, 'targetClass' => Cualidades::class, 'targetAttribute' => ['id_cualidades' => 'id_cualidades']],
         ];
     }
 
@@ -59,7 +58,7 @@ class Carrera extends \yii\db\ActiveRecord
      */
     public function getAlumnos()
     {
-        return $this->hasMany(Alumno::class, ['id_carrera' => 'id_carrera']);
+        return $this->hasMany(Alumnos::class, ['id_carrera' => 'id_carrera']);
     }
 
     /**
@@ -69,7 +68,7 @@ class Carrera extends \yii\db\ActiveRecord
      */
     public function getCualidades()
     {
-        return $this->hasOne(Cualidade::class, ['id_cualidades' => 'id_cualidades']);
+        return $this->hasOne(Cualidades::class, ['id_cualidades' => 'id_cualidades']);
     }
 
 }

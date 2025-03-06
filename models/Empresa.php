@@ -22,7 +22,7 @@ use Yii;
  * @property string $correo
  * @property string|null $logo
  *
- * @property HojaDato[] $hojaDatos
+ * @property HojaDatos[] $hojaDatos
  */
 class Empresa extends \yii\db\ActiveRecord
 {
@@ -43,14 +43,12 @@ class Empresa extends \yii\db\ActiveRecord
     {
         return [
             [['logo'], 'default', 'value' => null],
-            [['id_empresa', 'nombre', 'perfil_profesional', 'cargo', 'nombre_lugar', 'calle', 'colonia', 'numero', 'codigo_postal', 'municipio', 'telefono_uno', 'telefono_dos', 'correo'], 'required'],
-            [['id_empresa'], 'integer'],
+            [['nombre', 'perfil_profesional', 'cargo', 'nombre_lugar', 'calle', 'colonia', 'numero', 'codigo_postal', 'municipio', 'telefono_uno', 'telefono_dos', 'correo'], 'required'],
             [['nombre', 'perfil_profesional', 'calle', 'colonia', 'correo', 'logo'], 'string', 'max' => 100],
             [['cargo', 'municipio'], 'string', 'max' => 80],
             [['nombre_lugar'], 'string', 'max' => 150],
             [['numero'], 'string', 'max' => 10],
             [['codigo_postal', 'telefono_uno', 'telefono_dos'], 'string', 'max' => 15],
-            [['id_empresa'], 'unique'],
         ];
     }
 
@@ -84,7 +82,7 @@ class Empresa extends \yii\db\ActiveRecord
      */
     public function getHojaDatos()
     {
-        return $this->hasMany(HojaDato::class, ['id_empresa' => 'id_empresa']);
+        return $this->hasMany(HojaDatos::class, ['id_empresa' => 'id_empresa']);
     }
 
 }
