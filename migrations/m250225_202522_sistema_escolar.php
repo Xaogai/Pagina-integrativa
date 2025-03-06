@@ -191,6 +191,80 @@ class m240225_000000_create_all_tables extends Migration
         $this->addForeignKey('fk_cartatermino_alumno', 'Carta_termino', 'id_alumno', 'Alumnos', 'id_alumno', 'CASCADE', 'CASCADE');
         $this->addForeignKey('fk_cartatermino_semestre', 'Carta_termino', 'id_semestre', 'Semestre', 'id_semestre', 'CASCADE', 'CASCADE');
         $this->addForeignKey('fk_cartatermino_ciclo', 'Carta_termino', 'id_ciclo', 'Ciclo_escolar', 'id_ciclo', 'CASCADE', 'CASCADE');
+    
+        $this->insert('Institucion', [
+            'nombre' => 'Unidad Académica Profesional Tianguistenco'
+        ]);
+        $this->insert('Institucion', [
+            'nombre' => 'CBT No. 2, Metepec'
+        ]);
+        $this->insert('Institucion', [
+            'nombre' => 'CBT No. 3, Metepec'
+        ]);
+
+        $this->insert('Semestre', [
+            'nombre' => 'Cuarto'
+        ]);
+        $this->insert('Semestre', [
+            'nombre' => 'Quinto'
+        ]);
+        $this->insert('Semestre', [
+            'nombre' => 'Tercer'
+        ]);
+
+        $this->insert('Grado', [
+            'nombre' => 'PRIMERO'
+        ]);
+        $this->insert('Grado', [
+            'nombre' => 'SEGUNDO'
+        ]);
+        $this->insert('Grado', [
+            'nombre' => 'TERCERO'
+        ]);
+
+        $this->insert('Grupos', [
+            'nombre' => 'UNO'
+        ]);
+        $this->insert('Grupos', [
+            'nombre' => 'DOS'
+        ]);
+        $this->insert('Grupos', [
+            'nombre' => 'TRES'
+        ]);
+
+        $this->insert('Carrera', [
+            'nombre' => 'Programación'
+        ]);
+        $this->insert('Carrera', [
+            'nombre' => 'Diseño'
+        ]);
+        $this->insert('Carrera', [
+            'nombre' => 'Computación'
+        ]);
+
+        $this->insert('Cualidades', [
+            'cualidad' => 'Conocimiento en computación y java'
+        ]);
+        $this->insert('Cualidades', [
+            'cualidad' => 'Conocimiento en dibujo y diseño'
+        ]);
+        $this->insert('Cualidades', [
+            'cualidad' => 'Conocimiento de computación'
+        ]);
+
+        $this->insert('Turnos', [
+            'nombre' => 'Matutino'
+        ]);
+        $this->insert('Turnos', [
+            'nombre' => 'Vespertino'
+        ]);
+
+        $this->insert('Ciclo_escolar', [
+            'ciclo' => '2024-2025'
+        ]);
+
+
+
     }
 
     public function safeDown()
