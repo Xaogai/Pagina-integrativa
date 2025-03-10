@@ -2,7 +2,10 @@
 
 use yii\db\Migration;
 
-class m250225_202522_sistema_escolar extends \yii\db\Migration
+/**
+ * Class m250306_184355_sistema_escolar_2_0
+ */
+class m250306_184355_sistema_escolar_2_0 extends \yii\db\Migration
 {
     public function safeUp()
     {
