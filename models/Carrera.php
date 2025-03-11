@@ -1,22 +1,19 @@
 <?php
-
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
+use app\models\GetAllRecordsTrait;
 
 /**
- * This is the model class for table "carrera".
+ * This is the model class for table "Carrera".
  *
  * @property int $id_carrera
  * @property string $nombre
  * @property int $id_cualidades
- *
- * @property Alumnos[] $alumnos
- * @property Cualidades $cualidades
  */
-class Carrera extends \yii\db\ActiveRecord
+class Carrera extends ActiveRecord
 {
-
+    use GetAllRecordsTrait; // Usar el trait
 
     /**
      * {@inheritdoc}
@@ -35,7 +32,6 @@ class Carrera extends \yii\db\ActiveRecord
             [['nombre', 'id_cualidades'], 'required'],
             [['id_cualidades'], 'integer'],
             [['nombre'], 'string', 'max' => 50],
-            [['id_cualidades'], 'exist', 'skipOnError' => true, 'targetClass' => Cualidades::class, 'targetAttribute' => ['id_cualidades' => 'id_cualidades']],
         ];
     }
 
@@ -45,30 +41,9 @@ class Carrera extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_carrera' => 'Id Carrera',
+            'id_carrera' => 'ID Carrera',
             'nombre' => 'Nombre',
-            'id_cualidades' => 'Id Cualidades',
+            'id_cualidades' => 'ID Cualidades',
         ];
     }
-
-    /**
-     * Gets query for [[Alumnos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAlumnos()
-    {
-        return $this->hasMany(Alumnos::class, ['id_carrera' => 'id_carrera']);
-    }
-
-    /**
-     * Gets query for [[Cualidades]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCualidades()
-    {
-        return $this->hasOne(Cualidades::class, ['id_cualidades' => 'id_cualidades']);
-    }
-
 }

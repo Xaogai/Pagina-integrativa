@@ -3,9 +3,17 @@
 namespace app\controllers\alumno;
 
 use Yii;
-use app\models\Alumno;
+use app\models\Alumnos;
+use app\models\Institucion;
+use app\models\Semestre;
+use app\models\Grado;
+use app\models\Grupos;
+use app\models\Carrera;
+use app\models\Turnos;
+use app\models\CicloEscolar;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\helpers\ArrayHelper;
 
 class AlumnoController extends Controller
 {
@@ -18,31 +26,48 @@ class AlumnoController extends Controller
 
     public function actionDatosGenerales()
     {
-        // Instancia un nuevo modelo de Alumno
-        $model = new Alumno();
+        $id = Yii::$app->user->identity->id_alumno ?? null;
+        $model = $id ? $this->findModel($id) : new Alumnos();
 
-        // Si se envía el formulario y es válido, guarda y redirige
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Datos guardados correctamente.');
             return $this->redirect(['datos-generales']);
         }
 
-        // Renderiza la vista pasando el modelo
         return $this->render('/alumno/datos-generales', [
             'model' => $model,
+            'semestres' => ArrayHelper::map(Semestre::getAllRecords(), 'id_semestre', 'nombre'),
+            'instituciones' => ArrayHelper::map(Institucion::getAllRecords(), 'id_institucion', 'nombre'),
+            'grados' => ArrayHelper::map(Grado::getAllRecords(), 'id_grado', 'nombre'),
+            'grupos' => ArrayHelper::map(Grupos::getAllRecords(), 'id_grupo', 'nombre'),
+            'carreras' => ArrayHelper::map(Carrera::getAllRecords(), 'id_carrera', 'nombre'),
+            'turnos' => ArrayHelper::map(Turnos::getAllRecords(), 'id_turno', 'nombre'),
+            'ciclos' => ArrayHelper::map(CicloEscolar::getAllRecords(), 'id_ciclo', 'ciclo'),
         ]);
     }
 
     public function actionCreate()
     {
-        $model = new Alumno();
+        $model = new Alumnos();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id_alumno]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Alumno registrado correctamente.');
+                return $this->redirect(['view', 'id' => $model->id_alumno]);
+            } else {
+                Yii::$app->session->setFlash('error', 'No se pudo registrar el alumno.');
+            }
         }
 
         return $this->render('/alumno/create', [
             'model' => $model,
+            'instituciones' => ArrayHelper::map(Institucion::getAllRecords(), 'id_institucion', 'nombre'),
+            'semestres' => ArrayHelper::map(Semestre::getAllRecords(), 'id_semestre', 'nombre'),
+            'grados' => ArrayHelper::map(Grado::getAllRecords(), 'id_grado', 'nombre'),
+            'grupos' => ArrayHelper::map(Grupos::getAllRecords(), 'id_grupo', 'nombre'),
+            'carreras' => ArrayHelper::map(Carrera::getAllRecords(), 'id_carrera', 'nombre'),
+            'turnos' => ArrayHelper::map(Turnos::getAllRecords(), 'id_turno', 'nombre'),
+            'ciclos' => ArrayHelper::map(CicloEscolar::getAllRecords(), 'id_ciclo', 'ciclo'),
         ]);
     }
 
@@ -55,7 +80,12 @@ class AlumnoController extends Controller
 
     protected function findModel($id)
     {
-        if (($model = Alumno::findOne($id)) !== null) {
+        $model = Alumnos::find()
+            ->with(['semestre', 'institucion']) // Cargar relaciones
+            ->where(['id_alumno' => $id])
+            ->one();
+
+        if ($model !== null) {
             return $model;
         }
 

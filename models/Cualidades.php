@@ -1,20 +1,18 @@
 <?php
-
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
+use app\models\GetAllRecordsTrait;
 
 /**
- * This is the model class for table "cualidades".
+ * This is the model class for table "Cualidades".
  *
  * @property int $id_cualidades
- * @property string|null $cualidades
- *
- * @property Carrera[] $carreras
+ * @property string $cualidades
  */
-class Cualidades extends \yii\db\ActiveRecord
+class Cualidades extends ActiveRecord
 {
-
+    use GetAllRecordsTrait; // Usar el trait
 
     /**
      * {@inheritdoc}
@@ -30,7 +28,7 @@ class Cualidades extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cualidades'], 'default', 'value' => null],
+            [['cualidades'], 'required'],
             [['cualidades'], 'string'],
         ];
     }
@@ -41,19 +39,8 @@ class Cualidades extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_cualidades' => 'Id Cualidades',
+            'id_cualidades' => 'ID Cualidades',
             'cualidades' => 'Cualidades',
         ];
     }
-
-    /**
-     * Gets query for [[Carreras]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCarreras()
-    {
-        return $this->hasMany(Carrera::class, ['id_cualidades' => 'id_cualidades']);
-    }
-
 }
