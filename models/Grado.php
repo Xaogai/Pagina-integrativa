@@ -12,7 +12,7 @@ use Yii;
  *
  * @property Alumnos[] $alumnos
  */
-class Grados extends \yii\db\ActiveRecord
+class Grado extends \yii\db\ActiveRecord
 {
 
 

@@ -44,8 +44,15 @@ use Yii;
  * @property Semestre $semestreactual
  * @property Turnos $turno
  */
-class Alumno extends \yii\db\ActiveRecord
+class Alumnos extends \yii\db\ActiveRecord
 {
+
+    /**
+     * ENUM field values
+     */
+    const SEXO_F = 'F';
+    const SEXO_M = 'M';
+
     /**
      * {@inheritdoc}
      */
@@ -60,8 +67,9 @@ class Alumno extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_alumno', 'correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_ciclo'], 'required'],
-            [['id_alumno', 'id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_ciclo'], 'integer'],
+            [['sexo', 'telefono_uno', 'telefono_dos', 'calle', 'numero', 'colonia', 'codigo_postal', 'municipio'], 'default', 'value' => null],
+            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_ciclo'], 'required'],
+            [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_ciclo'], 'integer'],
             [['fecha_nacimiento'], 'safe'],
             [['sexo'], 'string'],
             [['correo', 'colonia'], 'string', 'max' => 100],
@@ -69,10 +77,10 @@ class Alumno extends \yii\db\ActiveRecord
             [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'string', 'max' => 80],
             [['telefono_uno', 'telefono_dos'], 'string', 'max' => 15],
             [['numero', 'codigo_postal'], 'string', 'max' => 10],
+            ['sexo', 'in', 'range' => array_keys(self::optsSexo())],
             [['correo'], 'unique'],
             [['curp'], 'unique'],
             [['nss'], 'unique'],
-            [['id_alumno'], 'unique'],
             [['id_semestreactual'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestreactual' => 'id_semestre']],
             [['id_institucion'], 'exist', 'skipOnError' => true, 'targetClass' => Institucion::class, 'targetAttribute' => ['id_institucion' => 'id_institucion']],
             [['id_grado'], 'exist', 'skipOnError' => true, 'targetClass' => Grado::class, 'targetAttribute' => ['id_grado' => 'id_grado']],
@@ -97,7 +105,7 @@ class Alumno extends \yii\db\ActiveRecord
             'apellido_materno' => 'Apellido Materno',
             'id_semestreactual' => 'Id Semestreactual',
             'id_institucion' => 'Id Institucion',
-            'nss' => 'Número de seguridad social (NSS)',
+            'nss' => 'Nss',
             'fecha_nacimiento' => 'Fecha Nacimiento',
             'sexo' => 'Sexo',
             'id_grado' => 'Id Grado',
@@ -233,5 +241,52 @@ class Alumno extends \yii\db\ActiveRecord
     public function getTurno()
     {
         return $this->hasOne(Turnos::class, ['id_turno' => 'id_turno']);
+    }
+
+
+    /**
+     * column sexo ENUM value labels
+     * @return string[]
+     */
+    public static function optsSexo()
+    {
+        return [
+            self::SEXO_F => 'F',
+            self::SEXO_M => 'M',
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function displaySexo()
+    {
+        return self::optsSexo()[$this->sexo];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSexoF()
+    {
+        return $this->sexo === self::SEXO_F;
+    }
+
+    public function setSexoToF()
+    {
+        $this->sexo = self::SEXO_F;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSexoM()
+    {
+        return $this->sexo === self::SEXO_M;
+    }
+
+    public function setSexoToM()
+    {
+        $this->sexo = self::SEXO_M;
     }
 }

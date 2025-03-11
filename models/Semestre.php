@@ -16,7 +16,7 @@ use Yii;
  * @property CartaTermino[] $cartaTerminos
  * @property HojaDatos[] $hojaDatos
  */
-class Semestres extends \yii\db\ActiveRecord
+class Semestre extends \yii\db\ActiveRecord
 {
 
 

@@ -14,7 +14,7 @@ use Yii;
  * @property CartaPresentacion[] $cartaPresentacions
  * @property HojaDatos[] $hojaDatos
  */
-class FondoCBT extends \yii\db\ActiveRecord
+class Fondo_CBT extends \yii\db\ActiveRecord
 {
 
     /**

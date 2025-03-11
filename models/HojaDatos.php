@@ -24,7 +24,7 @@ use Yii;
  * @property FondoCbt $formato
  * @property Semestre $semestre
  */
-class HojaDeDatos extends \yii\db\ActiveRecord
+class HojaDatos extends \yii\db\ActiveRecord
 {
 
     /**

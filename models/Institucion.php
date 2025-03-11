@@ -5,14 +5,14 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "turnos".
+ * This is the model class for table "institucion".
  *
- * @property int $id_turno
+ * @property int $id_institucion
  * @property string $nombre
  *
  * @property Alumnos[] $alumnos
  */
-class Turno extends \yii\db\ActiveRecord
+class Institucion extends \yii\db\ActiveRecord
 {
 
 
@@ -21,7 +21,7 @@ class Turno extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'turnos';
+        return 'institucion';
     }
 
     /**
@@ -31,7 +31,7 @@ class Turno extends \yii\db\ActiveRecord
     {
         return [
             [['nombre'], 'required'],
-            [['nombre'], 'string', 'max' => 50],
+            [['nombre'], 'string', 'max' => 80],
         ];
     }
 
@@ -41,7 +41,7 @@ class Turno extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_turno' => 'Id Turno',
+            'id_institucion' => 'Id Institucion',
             'nombre' => 'Nombre',
         ];
     }
@@ -53,7 +53,7 @@ class Turno extends \yii\db\ActiveRecord
      */
     public function getAlumnos()
     {
-        return $this->hasMany(Alumnos::class, ['id_turno' => 'id_turno']);
+        return $this->hasMany(Alumnos::class, ['id_institucion' => 'id_institucion']);
     }
 
 }
