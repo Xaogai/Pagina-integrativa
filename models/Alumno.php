@@ -97,7 +97,7 @@ class Alumno extends \yii\db\ActiveRecord
             'apellido_materno' => 'Apellido Materno',
             'id_semestreactual' => 'Id Semestreactual',
             'id_institucion' => 'Id Institucion',
-            'nss' => 'Nss',
+            'nss' => 'Número de seguridad social (NSS)',
             'fecha_nacimiento' => 'Fecha Nacimiento',
             'sexo' => 'Sexo',
             'id_grado' => 'Id Grado',

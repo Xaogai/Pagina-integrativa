@@ -3,22 +3,28 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
-use Mpdf\Mpdf; // Asegúrate de importar la clase correctamente
+use Mpdf\Mpdf;
 
 class PdfController extends Controller
 {
     public function actionPdf()
     {
-        // Crear instancia de mPDF
+        $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
+        $styleCssFile = Yii::getAlias('@webroot/css/style-pdf.css');
+
+        $resetCss = file_get_contents($resetCssFile);
+        $styleCss = file_get_contents($styleCssFile);
+
+        $css = $resetCss . "\n" . $styleCss;
+
+        $html = $this->renderPartial('carta-presentacion');
+
         $mpdf = new Mpdf();
 
-        // Contenido del PDF
-        $html = '<h1>Hola, este es un PDF en Yii2</h1><p>Generado con mPDF.</p>';
+        $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
 
-        // Escribir el contenido HTML en el PDF
-        $mpdf->WriteHTML($html);
+        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
-        // Enviar el PDF al navegador
-        return $mpdf->Output('documento.pdf', 'I'); // 'I' para mostrar en el navegador
+        return $mpdf->Output('carta-presentacion.pdf', 'I');
     }
 }
