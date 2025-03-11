@@ -17,7 +17,7 @@ class PdfController extends Controller
 
         $css = $resetCss . "\n" . $styleCss;
 
-        $html = $this->renderPartial('carta-presentacion');
+        $html = $this->renderPartial('//carta-presentacion');
 
         $mpdf = new Mpdf();
 

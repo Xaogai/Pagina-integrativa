@@ -2,8 +2,8 @@
 
 <html lang="es">
     <head>
-        <meta charset="UTF-8"> 
-        <title>Carta de Presentación</title>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
         <meta name="viewport" content="width-device-width,user-scalable-no,initial-scale=1.0,maximum-scale=1.0,minimun-scale=1.0">
     </head>
     <body>
@@ -19,7 +19,7 @@
         </header>
         <main>
             <p class="title">CBT No. 2, METEPEC</p>
-            <div class="fecha"> San Bartolomé, Tlaltelulco, Metepec, Méx., a<div class="fecha-emision">27 de febrero de 2024.</div></div>
+            <div class="fecha"> San Bartolomé, Tlaltelulco, Metepec, Méx., a<p1 class="fecha-emision"> 27 de febrero de 2024.</p1></div>
             <p class="presente">P R E S E N T E.</p>
             <div class="contenido">
                 <div class="p">El que suscribe <strong>Mtro. en D. P. Francisco Ricardo López Sotelo, Director Escolar del CBT No. 2, METEPEC</strong>, por este conducto informo a usted que nuestra institución, tiene como misión contribuir hacia una educación integral del estudiante basado en competencias promoviendo la adquisición de un pensamiento crítico para dar respuesta inmediata a las exigencias de las demandas sociales y laborales, bajo un ambiente de respeto, trabajo en equipo y responsabilidad.</div>
@@ -29,7 +29,7 @@
                 <div class="p">Con la confianza de poder contar con su valioso apoyo, agradezco de antemano el interés por contribuir en el proceso complementario de la formación de campo profesional y desarrollo de nuestros estudiantes.</div>
             </div>
             <div class="firma">
-                <p>A t e n t a m e n t e</p>
+                <p class="primero">A t e n t a m e n t e</p>
                 <p>Mtro. en D. P. Francisco Ricardo López Sotelo</p>
                 <p>Director Escolar</p>
             </div>
