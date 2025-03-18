@@ -34,3 +34,5 @@ tests/_support/_generated
 
 #configuracion base de datos
 config/db.php
+#config de id cliente y llave
+config/web.php
