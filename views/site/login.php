@@ -53,3 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<?= yii\authclient\widgets\AuthChoice::widget([
+    'baseAuthUrl' => ['site/auth'],
+    'popupMode' => true, // Esto asegura que el enlace se abra en una ventana emergente
+]) ?>

@@ -9,12 +9,11 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\authclient\ClientInterface;
+use app\models\Usuarios;
 
 class SiteController extends Controller
 {
-    /** 
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
@@ -38,9 +37,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -51,89 +47,78 @@ class SiteController extends Controller
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-public function actionIndex()
-{
-    return $this->render(['index']);
-}
+    public function actionIndex()
+    {
+        return $this->render('index'); // Corrección aquí
+    }
 
+    public function onAuthSuccess(ClientInterface $client)
+    {
+        $attributes = $client->getUserAttributes();
+        $email = $attributes['email'];
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
+        $usuario = Usuarios::findOne(['correo' => $email]);
+
+        if (!$usuario) {
+            Yii::$app->session->setFlash('error', 'No tienes acceso a la aplicación.');
+            return $this->redirect(['site/login']);
+        }
+
+        Yii::$app->user->login($usuario);
+
+        // Redirigir a una acción que cierre la ventana emergente
+        return $this->redirect(['site/close-popup']);
+    }
+
+    public function actionClosePopup()
+    {
+        // Renderizar una vista que contenga el script para cerrar la ventana emergente
+        return $this->render('close-popup');
+    }
     public function actionLogin()
     {
-        // Si el usuario ya está logueado, redirige a la página principal
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['/alumno']);// Redirige a /alumno/index
+            return $this->redirect(['/alumno']);
         }
-    
-        // Si no está logueado, procede con el proceso de login
+
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['/alumno']);// Redirige al índice del alumno después del login exitoso
+            return $this->redirect(['/alumno']);
         }
-    
-        // Si el login falla, limpia la contraseña y vuelve a mostrar el formulario de login
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
-    
 
-        /* $user = Yii::$app->user->identity;
-if ($user->role === 'admin') {
-    return $this->redirect(['admin/dashboard']);
-} else {
-    return $this->redirect(['site/index']);
-}
-*/
+        $model->password = '';
+        return $this->render('login', ['model' => $model]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        if (Yii::$app->session->has('authClient')) {
+            $client = Yii::$app->authClientCollection->getClient(Yii::$app->session->get('authClient'));
+            $client->revokeToken();
+            Yii::$app->session->remove('authClient');
+        }
 
-        return $this->goHome();
+        Yii::$app->user->logout();
+        return $this->redirect(['site/login']);
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
     public function actionContact()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
-
             return $this->refresh();
         }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+        return $this->render('contact', ['model' => $model]);
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
     public function actionAbout()
     {
         return $this->render('about');
@@ -141,8 +126,8 @@ if ($user->role === 'admin') {
 
     public function actionCheckAccess()
     {
-        $userId = 1; // ID del usuario que quieres verificar
-        $permission = 'manageUsers'; // Permiso a verificar
+        $userId = 1;
+        $permission = 'manageUsers';
 
         if (Yii::$app->authManager->checkAccess($userId, $permission)) {
             return "✅ El usuario tiene permisos para gestionar usuarios.";
@@ -150,5 +135,4 @@ if ($user->role === 'admin') {
             return "❌ El usuario NO tiene permisos.";
         }
     }
-
 }

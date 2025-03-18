@@ -22,7 +22,7 @@ $this->beginPage();
         <h2>Alumno</h2>
         <ul>
             <li><a href="<?= Url::to(['site/index']) ?>">Inicio</a></li>
-            <li><a href="<?= Url::to(['alumno/alumno/datos-generales']) ?>">Datos del alumno</a></li>
+            <li><a href="<?= Url::to(['alumno/datos-generales']) ?>">Datos del alumno</a></li>
             <li class="dropdown">
                 <a href="#" class="dropbtn">Prácticas</a>
                 <ul class="submenu">
@@ -31,23 +31,19 @@ $this->beginPage();
                     <li><a href="<?= Url::to(['practicas/carta-termino']) ?>">Carta de Término</a></li>
                 </ul>
             </li>
-            <!-- Agregar el botón de logout aquí -->
-            <?php if (!Yii::$app->user->isGuest): ?>
-                <li class="logout-button">
-                    <?php
-                    // Formulario para logout
-                    echo Html::beginForm(['site/logout'], 'post');
-                    echo Html::submitButton('Cerrar sesión', ['class' => 'btn btn-danger']);
-                    echo Html::endForm();
-                    ?>
-                </li>
-            <?php endif; ?>
+            
+            <li class="logout-button">
+                <?= Html::a('Cerrar sesión', ['site/logout'], [
+                    'class' => 'btn btn-danger',
+                    'data-method' => 'post'
+                ]) ?>
+            </li>
         </ul>
     </div>
 
     <div class="main-content">
         <h1>Panel del Alumno</h1>
-        <?= $content ?>  <!-- Aquí se inserta la vista -->
+        <?= $content ?>
 
         <div class="estado-estudiante">
             <h3>Estado del Estudiante</h3>
@@ -63,4 +59,4 @@ $this->beginPage();
 <?php $this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage() ?>
+<?php $this->endPage(); ?>
