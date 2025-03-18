@@ -62,6 +62,17 @@ $config = [
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>', // Regla general
         ],
 ],
+    'authClientCollection' => [
+        'class' => 'yii\authclient\Collection',
+        'clients' => [
+            'google' => [
+                'class' => 'yii\authclient\clients\Google',
+                'clientId' => 'id clienteeee',
+                'clientSecret' => 'secretooo',
+                'returnUrl' => 'http://localhost:8080/site/auth?authclient=google', // Debe coincidir con Google
+            ],
+        ],
+    ],
 
 
     ],
