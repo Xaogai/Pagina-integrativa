@@ -46,7 +46,6 @@ use Yii;
  */
 class Alumnos extends \yii\db\ActiveRecord
 {
-
     /**
      * ENUM field values
      */
@@ -103,130 +102,28 @@ class Alumnos extends \yii\db\ActiveRecord
             'nombre' => 'Nombre',
             'apellido_paterno' => 'Apellido Paterno',
             'apellido_materno' => 'Apellido Materno',
-            'id_semestreactual' => 'Id Semestreactual',
-            'id_institucion' => 'Id Institucion',
-            'nss' => 'Nss',
-            'fecha_nacimiento' => 'Fecha Nacimiento',
+            'id_semestreactual' => 'Semestre Actual',
+            'id_institucion' => 'Institución',
+            'nss' => 'NSS',
+            'fecha_nacimiento' => 'Fecha de Nacimiento',
             'sexo' => 'Sexo',
-            'id_grado' => 'Id Grado',
-            'id_grupo' => 'Id Grupo',
-            'id_carrera' => 'Id Carrera',
-            'id_turno' => 'Id Turno',
-            'telefono_uno' => 'Telefono Uno',
-            'telefono_dos' => 'Telefono Dos',
+            'id_grado' => 'Grado',
+            'id_grupo' => 'Grupo',
+            'id_carrera' => 'Carrera',
+            'id_turno' => 'Turno',
+            'telefono_uno' => 'Teléfono Uno',
+            'telefono_dos' => 'Teléfono Dos',
             'calle' => 'Calle',
-            'numero' => 'Numero',
+            'numero' => 'Número',
             'colonia' => 'Colonia',
-            'codigo_postal' => 'Codigo Postal',
+            'codigo_postal' => 'Código Postal',
             'municipio' => 'Municipio',
-            'id_ciclo' => 'Id Ciclo',
+            'id_ciclo' => 'Ciclo Escolar',
         ];
     }
 
     /**
-     * Gets query for [[Carrera]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCarrera()
-    {
-        return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
-    }
-
-    /**
-     * Gets query for [[CartaAceptacions]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCartaAceptacions()
-    {
-        return $this->hasMany(CartaAceptacion::class, ['id_alumno' => 'id_alumno']);
-    }
-
-    /**
-     * Gets query for [[CartaPresentacions]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCartaPresentacions()
-    {
-        return $this->hasMany(CartaPresentacion::class, ['id_alumno' => 'id_alumno']);
-    }
-
-    /**
-     * Gets query for [[CartaTerminos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCartaTerminos()
-    {
-        return $this->hasMany(CartaTermino::class, ['id_alumno' => 'id_alumno']);
-    }
-
-    /**
-     * Gets query for [[CartasAlumnos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCartasAlumnos()
-    {
-        return $this->hasMany(CartasAlumno::class, ['id_alumno' => 'id_alumno']);
-    }
-
-    /**
-     * Gets query for [[Ciclo]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCiclo()
-    {
-        return $this->hasOne(CicloEscolar::class, ['id_ciclo' => 'id_ciclo']);
-    }
-
-    /**
-     * Gets query for [[Grado]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getGrado()
-    {
-        return $this->hasOne(Grado::class, ['id_grado' => 'id_grado']);
-    }
-
-    /**
-     * Gets query for [[Grupo]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getGrupo()
-    {
-        return $this->hasOne(Grupos::class, ['id_grupo' => 'id_grupo']);
-    }
-
-    /**
-     * Gets query for [[HojaDatos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHojaDatos()
-    {
-        return $this->hasMany(HojaDatos::class, ['id_alumno' => 'id_alumno']);
-    }
-
-    /**
-     * Gets query for [[Institucion]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getInstitucion()
-    {
-        return $this->hasOne(Institucion::class, ['id_institucion' => 'id_institucion']);
-    }
-
-    /**
-     * Gets query for [[Semestreactual]].
-     *
-     * @return \yii\db\ActiveQuery
+     * Relación con la tabla Semestre.
      */
     public function getSemestreactual()
     {
@@ -234,29 +131,69 @@ class Alumnos extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Turno]].
-     *
-     * @return \yii\db\ActiveQuery
+     * Relación con la tabla Institucion.
+     */
+    public function getInstitucion()
+    {
+        return $this->hasOne(Institucion::class, ['id_institucion' => 'id_institucion']);
+    }
+
+    /**
+     * Relación con la tabla Grado.
+     */
+    public function getGrado()
+    {
+        return $this->hasOne(Grado::class, ['id_grado' => 'id_grado']);
+    }
+
+    /**
+     * Relación con la tabla Grupos.
+     */
+    public function getGrupo()
+    {
+        return $this->hasOne(Grupos::class, ['id_grupo' => 'id_grupo']);
+    }
+
+    /**
+     * Relación con la tabla Carrera.
+     */
+    public function getCarrera()
+    {
+        return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
+    }
+
+    /**
+     * Relación con la tabla Turnos.
      */
     public function getTurno()
     {
         return $this->hasOne(Turnos::class, ['id_turno' => 'id_turno']);
     }
 
+    /**
+     * Relación con la tabla CicloEscolar.
+     */
+    public function getCiclo()
+    {
+        return $this->hasOne(CicloEscolar::class, ['id_ciclo' => 'id_ciclo']);
+    }
 
     /**
-     * column sexo ENUM value labels
+     * Obtiene las opciones para el campo ENUM `sexo`.
+     *
      * @return string[]
      */
     public static function optsSexo()
     {
         return [
-            self::SEXO_F => 'F',
-            self::SEXO_M => 'M',
+            self::SEXO_F => 'Femenino',
+            self::SEXO_M => 'Masculino',
         ];
     }
 
     /**
+     * Muestra el valor del campo `sexo`.
+     *
      * @return string
      */
     public function displaySexo()
@@ -265,6 +202,8 @@ class Alumnos extends \yii\db\ActiveRecord
     }
 
     /**
+     * Verifica si el sexo es Femenino.
+     *
      * @return bool
      */
     public function isSexoF()
@@ -272,12 +211,17 @@ class Alumnos extends \yii\db\ActiveRecord
         return $this->sexo === self::SEXO_F;
     }
 
+    /**
+     * Establece el sexo como Femenino.
+     */
     public function setSexoToF()
     {
         $this->sexo = self::SEXO_F;
     }
 
     /**
+     * Verifica si el sexo es Masculino.
+     *
      * @return bool
      */
     public function isSexoM()
@@ -285,6 +229,9 @@ class Alumnos extends \yii\db\ActiveRecord
         return $this->sexo === self::SEXO_M;
     }
 
+    /**
+     * Establece el sexo como Masculino.
+     */
     public function setSexoToM()
     {
         $this->sexo = self::SEXO_M;

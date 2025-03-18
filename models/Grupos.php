@@ -1,20 +1,18 @@
 <?php
-
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
+use app\models\GetAllRecordsTrait;
 
 /**
- * This is the model class for table "grupos".
+ * This is the model class for table "Grupos".
  *
  * @property int $id_grupo
  * @property string $nombre
- *
- * @property Alumnos[] $alumnos
  */
-class Grupos extends \yii\db\ActiveRecord
+class Grupos extends ActiveRecord
 {
-
+    use GetAllRecordsTrait; // Usar el trait
 
     /**
      * {@inheritdoc}
@@ -41,19 +39,8 @@ class Grupos extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_grupo' => 'Id Grupo',
+            'id_grupo' => 'ID Grupo',
             'nombre' => 'Nombre',
         ];
     }
-
-    /**
-     * Gets query for [[Alumnos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAlumnos()
-    {
-        return $this->hasMany(Alumnos::class, ['id_grupo' => 'id_grupo']);
-    }
-
 }
