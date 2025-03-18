@@ -10,7 +10,6 @@ class PdfController extends Controller
 {
     public function actionPdf()
     {
-        // Obtener los datos de la tabla "carta_presentacion"
         $cartas = CartaPresentacion::find()
             ->select([
                 'carta_presentacion.*',
@@ -26,30 +25,45 @@ class PdfController extends Controller
             ->asArray()
             ->all();
 
-        // Cargar los archivos CSS
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
-        $styleCssFile = Yii::getAlias('@webroot/css/style-pdf.css');
+        $styleCssFile = Yii::getAlias('@webroot/css/style-presentacion.css');
 
         $resetCss = file_get_contents($resetCssFile);
         $styleCss = file_get_contents($styleCssFile);
 
         $css = $resetCss . "\n" . $styleCss;
 
-        // Renderizar la vista y pasar los datos
         $html = $this->renderPartial('//carta-presentacion', [
-            'cartas' => $cartas, // Pasamos las cartas a la vista
+            'cartas' => $cartas, 
         ]);
 
-        // Crear instancia de mPDF
         $mpdf = new Mpdf();
 
-        // Aplicar CSS
         $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
 
-        // Escribir el HTML en el PDF
         $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
-        // Mostrar el PDF en el navegador
         return $mpdf->Output('carta-presentacion.pdf', 'I');
+    }
+
+    public function actionAceptacion()
+    {
+        $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
+        $styleCssFile = Yii::getAlias('@webroot/css/style-aceptacion.css');
+
+        $resetCss = file_get_contents($resetCssFile);
+        $styleCss = file_get_contents($styleCssFile);
+
+        $css = $resetCss . "\n" . $styleCss;
+
+        $html = $this->renderPartial('//carta-aceptacion');
+
+        $mpdf = new Mpdf();
+
+        $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
+
+        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+
+        return $mpdf->Output('carta-aceptacion.pdf', 'I');
     }
 }
