@@ -1,0 +1,68 @@
+/*FONT*/
+body
+{
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    line-height: 1.1;
+}
+
+strong, .subtitulo, .firma
+{
+    font-weight: bold;
+}
+
+/*HEADER*/
+.informacion
+{
+    text-align: right;
+    font-size: 12px;
+}
+
+.informacion p:first-child
+{
+    font-weight: bold;
+}
+
+/*MAIN*/
+
+.titulo
+{
+    text-align: center;
+    font-weight: bold;
+}
+
+.contenido
+{
+    text-align: justify;
+    word-spacing: 2px;
+    hyphens: auto;
+}
+
+.subtitulo
+{
+    margin: 5px 0;
+}
+
+tr, th
+{
+    border: 1px solid;
+    text-align: left;
+}
+
+th
+{
+    font-weight: lighter;
+    padding: 5px;
+}
+
+.dato
+{
+    padding-right: 4em;
+    width: 40%;
+}
+
+.firma
+{    
+    font-size: 11px;
+    margin-top: 1em;
+}
