@@ -9,12 +9,11 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\authclient\ClientInterface;
+use app\models\Usuarios;
 
 class SiteController extends Controller
 {
-    /** 
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
@@ -38,9 +37,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -51,104 +47,96 @@ class SiteController extends Controller
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-public function actionIndex()
-{
-    return $this->render(['index']);
-}
+    public function actionIndex()
+    {
+        return $this->render('index'); // Corrección aquí
+    }
 
+    public function onAuthSuccess(ClientInterface $client)
+    {
+        $attributes = $client->getUserAttributes();
+    
+        if (!isset($attributes['email'])) {
+            Yii::$app->session->setFlash('error', 'No se pudo obtener el correo electrónico.');
+            return $this->redirect(['site/login']);
+        }
+    
+        $email = $attributes['email'];
+        $usuario = Usuarios::findOne(['correo' => $email]);
+    
+        if (!$usuario) {
+            Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
+            return $this->redirect(['site/login']);
+        }
+    
+        Yii::$app->user->login($usuario);
+    
+        // Redirigir a la página principal o dashboard
+        return $this->redirect(['/alumno']); // O la página que prefieras
+    }
+    
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
     public function actionLogin()
     {
-        // Si el usuario ya está logueado, redirige a la página principal
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['/alumno']);// Redirige a /alumno/index
+            return $this->redirect(['/alumno']);
         }
     
-        // Si no está logueado, procede con el proceso de login
         $model = new LoginForm();
+        
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['/alumno']);// Redirige al índice del alumno después del login exitoso
+            return $this->redirect(['/alumno']);
         }
     
-        // Si el login falla, limpia la contraseña y vuelve a mostrar el formulario de login
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model]);
+    }
     
 
-        /* $user = Yii::$app->user->identity;
-if ($user->role === 'admin') {
-    return $this->redirect(['admin/dashboard']);
-} else {
-    return $this->redirect(['site/index']);
-}
-*/
-    }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
+        // Cerrar sesión en la aplicación
+        Yii::$app->user->logout(true);
+    
+        // Verifica si hay un cliente OAuth en la sesión
+        if (Yii::$app->session->has('authClient')) {
+            $clientName = Yii::$app->session->get('authClient');
+    
+            // Redirigir al usuario a la página de cierre de sesión del proveedor OAuth
+            switch ($clientName) {
+                case 'google':
+                    return $this->redirect('https://accounts.google.com/Logout');
+                    break;
+                // Agrega más casos para otros proveedores OAuth
+                default:
+                    return $this->redirect(['site/login']);
+            }
+        }
+    
+        // Redirigir al usuario a la página de login
+        return $this->redirect(['site/login']);
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
     public function actionContact()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
-
             return $this->refresh();
         }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+        return $this->render('contact', ['model' => $model]);
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
     public function actionAbout()
     {
         return $this->render('about');
-    }
-
-    public function actionCheckAccess()
-    {
-        $userId = 1; // ID del usuario que quieres verificar
-        $permission = 'manageUsers'; // Permiso a verificar
-
-        if (Yii::$app->authManager->checkAccess($userId, $permission)) {
-            return "✅ El usuario tiene permisos para gestionar usuarios.";
-        } else {
-            return "❌ El usuario NO tiene permisos.";
-        }
     }
 
 }
