@@ -66,4 +66,25 @@ class PdfController extends Controller
 
         return $mpdf->Output('carta-aceptacion.pdf', 'I');
     }
+
+    public function actionTerminacion()
+    {
+        $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
+        $styleCssFile = Yii::getAlias('@webroot/css/style-termino.css');
+
+        $resetCss = file_get_contents($resetCssFile);
+        $styleCss = file_get_contents($styleCssFile);
+
+        $css = $resetCss . "\n" . $styleCss;
+
+        $html = $this->renderPartial('//carta-termino');
+
+        $mpdf = new Mpdf();
+
+        $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
+
+        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+
+        return $mpdf->Output('carta-termino.pdf', 'I');
+    }
 }

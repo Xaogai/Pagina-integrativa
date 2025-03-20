@@ -40,6 +40,15 @@ body
     padding: 1em 0;
 }
 
+.cualidades {
+    list-style-type: disc;
+    padding-left: 4em;
+}
+
+.cualidades li {
+    display: list-item;
+}
+
 .contenido .final
 {
     padding-top: 1em;
