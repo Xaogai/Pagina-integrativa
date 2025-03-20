@@ -87,4 +87,25 @@ class PdfController extends Controller
 
         return $mpdf->Output('carta-termino.pdf', 'I');
     }
+
+    public function actionDatos()
+    {
+        $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
+        $styleCssFile = Yii::getAlias('@webroot/css/style-datos.css');
+
+        $resetCss = file_get_contents($resetCssFile);
+        $styleCss = file_get_contents($styleCssFile);
+
+        $css = $resetCss . "\n" . $styleCss;
+
+        $html = $this->renderPartial('//carta-datos');
+
+        $mpdf = new Mpdf();
+
+        $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
+
+        $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+
+        return $mpdf->Output('Hoja-datos.pdf', 'I');
+    }
 }
