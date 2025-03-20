@@ -27,30 +27,50 @@ class AlumnoController extends Controller
     public function actionDatosGenerales()
     {
         $user_id = Yii::$app->session->get('user_id');
-        //$auth_token = Yii::$app->session->get('auth_token');
-
-        echo $user_id;
-        //echo $auth_token . "fffffffffffffff";
-
-        $id = Yii::$app->user->identity->id_alumno ?? null;
-        $model = $id ? $this->findModel($id) : new Alumnos();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Datos guardados correctamente.');
-            return $this->redirect(['datos-generales']);
+    
+        if (!$user_id) {
+            throw new ForbiddenHttpException('No tienes permiso para acceder a esta página.');
         }
-
+    
+        $model = Alumnos::findOne(['id_usuario' => $user_id]);
+    
+        if (!$model) {
+            $model = new Alumnos();
+            $model->id_usuario = $user_id;
+        }
+    
+        // Verificar si el formulario fue enviado con la acción de edición
+        $editable = Yii::$app->request->post('editable') == '1';
+    
+        if ($model->load(Yii::$app->request->post())) {
+            $accion = Yii::$app->request->post('accion');
+    
+            if ($accion === 'aceptar') {
+                if ($model->validate() && $model->save()) {
+                    Yii::$app->session->setFlash('success', 'Datos guardados correctamente.');
+                    return $this->redirect(['datos-generales']);
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error al guardar los datos.');
+                }
+                $editable = false; // Deshabilitar los campos después de guardar
+            }
+        }
+    
         return $this->render('/alumno/datos-generales', [
             'model' => $model,
-            'semestres' => ArrayHelper::map(Semestre::getAllRecords(), 'id_semestre', 'nombre'),
-            'instituciones' => ArrayHelper::map(Institucion::getAllRecords(), 'id_institucion', 'nombre'),
-            'grados' => ArrayHelper::map(Grado::getAllRecords(), 'id_grado', 'nombre'),
-            'grupos' => ArrayHelper::map(Grupos::getAllRecords(), 'id_grupo', 'nombre'),
-            'carreras' => ArrayHelper::map(Carrera::getAllRecords(), 'id_carrera', 'nombre'),
-            'turnos' => ArrayHelper::map(Turnos::getAllRecords(), 'id_turno', 'nombre'),
-            'ciclos' => ArrayHelper::map(CicloEscolar::getAllRecords(), 'id_ciclo', 'ciclo'),
+            'editable' => $editable,
+            'semestres' => ArrayHelper::map(Semestre::find()->all(), 'id_semestre', 'nombre'),
+            'instituciones' => ArrayHelper::map(Institucion::find()->all(), 'id_institucion', 'nombre'),
+            'grados' => ArrayHelper::map(Grado::find()->all(), 'id_grado', 'nombre'),
+            'grupos' => ArrayHelper::map(Grupos::find()->all(), 'id_grupo', 'nombre'),
+            'carreras' => ArrayHelper::map(Carrera::find()->all(), 'id_carrera', 'nombre'),
+            'turnos' => ArrayHelper::map(Turnos::find()->all(), 'id_turno', 'nombre'),
+            'ciclos' => ArrayHelper::map(CicloEscolar::find()->all(), 'id_ciclo', 'ciclo'),
         ]);
     }
+    
+
+
 
     public function actionCreate()
     {
@@ -67,13 +87,13 @@ class AlumnoController extends Controller
 
         return $this->render('/alumno/create', [
             'model' => $model,
-            'instituciones' => ArrayHelper::map(Institucion::getAllRecords(), 'id_institucion', 'nombre'),
-            'semestres' => ArrayHelper::map(Semestre::getAllRecords(), 'id_semestre', 'nombre'),
-            'grados' => ArrayHelper::map(Grado::getAllRecords(), 'id_grado', 'nombre'),
-            'grupos' => ArrayHelper::map(Grupos::getAllRecords(), 'id_grupo', 'nombre'),
-            'carreras' => ArrayHelper::map(Carrera::getAllRecords(), 'id_carrera', 'nombre'),
-            'turnos' => ArrayHelper::map(Turnos::getAllRecords(), 'id_turno', 'nombre'),
-            'ciclos' => ArrayHelper::map(CicloEscolar::getAllRecords(), 'id_ciclo', 'ciclo'),
+            'instituciones' => ArrayHelper::map(Institucion::find()->all(), 'id_institucion', 'nombre'),
+            'semestres' => ArrayHelper::map(Semestre::find()->all(), 'id_semestre', 'nombre'),
+            'grados' => ArrayHelper::map(Grado::find()->all(), 'id_grado', 'nombre'),
+            'grupos' => ArrayHelper::map(Grupos::find()->all(), 'id_grupo', 'nombre'),
+            'carreras' => ArrayHelper::map(Carrera::find()->all(), 'id_carrera', 'nombre'),
+            'turnos' => ArrayHelper::map(Turnos::find()->all(), 'id_turno', 'nombre'),
+            'ciclos' => ArrayHelper::map(CicloEscolar::find()->all(), 'id_ciclo', 'ciclo'),
         ]);
     }
 
@@ -87,7 +107,7 @@ class AlumnoController extends Controller
     protected function findModel($id)
     {
         $model = Alumnos::find()
-            ->with(['semestre', 'institucion']) // Cargar relaciones
+            ->with(['semestre', 'institucion', 'grado', 'grupo', 'carrera', 'turno', 'cicloEscolar'])
             ->where(['id_alumno' => $id])
             ->one();
 

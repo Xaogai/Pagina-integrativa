@@ -22,6 +22,7 @@ use Yii;
  * @property int $id_grupo
  * @property int $id_carrera
  * @property int $id_turno
+ * @property int $id_usuario
  * @property string|null $telefono_uno
  * @property string|null $telefono_dos
  * @property string|null $calle
@@ -43,6 +44,7 @@ use Yii;
  * @property Institucion $institucion
  * @property Semestre $semestreactual
  * @property Turnos $turno
+ * @property Usuarios $usuario
  */
 class Alumnos extends \yii\db\ActiveRecord
 {
@@ -67,25 +69,23 @@ class Alumnos extends \yii\db\ActiveRecord
     {
         return [
             [['sexo', 'telefono_uno', 'telefono_dos', 'calle', 'numero', 'colonia', 'codigo_postal', 'municipio'], 'default', 'value' => null],
-            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_ciclo'], 'required'],
-            [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_ciclo'], 'integer'],
-            [['fecha_nacimiento'], 'safe'],
-            [['sexo'], 'string'],
+            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required'],
+            [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'integer'],
+            [['fecha_nacimiento'], 'date', 'format' => 'php:Y-m-d'],
+            [['sexo'], 'in', 'range' => [self::SEXO_F, self::SEXO_M]],
             [['correo', 'colonia'], 'string', 'max' => 100],
             [['curp', 'nss', 'calle'], 'string', 'max' => 50],
             [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'string', 'max' => 80],
             [['telefono_uno', 'telefono_dos'], 'string', 'max' => 15],
             [['numero', 'codigo_postal'], 'string', 'max' => 10],
-            ['sexo', 'in', 'range' => array_keys(self::optsSexo())],
-            [['correo'], 'unique'],
-            [['curp'], 'unique'],
-            [['nss'], 'unique'],
+            [['correo', 'curp', 'nss'], 'unique'],
             [['id_semestreactual'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestreactual' => 'id_semestre']],
             [['id_institucion'], 'exist', 'skipOnError' => true, 'targetClass' => Institucion::class, 'targetAttribute' => ['id_institucion' => 'id_institucion']],
             [['id_grado'], 'exist', 'skipOnError' => true, 'targetClass' => Grado::class, 'targetAttribute' => ['id_grado' => 'id_grado']],
             [['id_grupo'], 'exist', 'skipOnError' => true, 'targetClass' => Grupos::class, 'targetAttribute' => ['id_grupo' => 'id_grupo']],
             [['id_carrera'], 'exist', 'skipOnError' => true, 'targetClass' => Carrera::class, 'targetAttribute' => ['id_carrera' => 'id_carrera']],
             [['id_turno'], 'exist', 'skipOnError' => true, 'targetClass' => Turnos::class, 'targetAttribute' => ['id_turno' => 'id_turno']],
+            [['id_usuario'], 'exist', 'skipOnError' => true, 'targetClass' => Usuarios::class, 'targetAttribute' => ['id_usuario' => 'id_usuario']],
             [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
         ];
     }
@@ -96,9 +96,9 @@ class Alumnos extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_alumno' => 'Id Alumno',
+            'id_alumno' => 'ID Alumno',
             'correo' => 'Correo',
-            'curp' => 'Curp',
+            'curp' => 'CURP',
             'nombre' => 'Nombre',
             'apellido_paterno' => 'Apellido Paterno',
             'apellido_materno' => 'Apellido Materno',
@@ -111,6 +111,7 @@ class Alumnos extends \yii\db\ActiveRecord
             'id_grupo' => 'Grupo',
             'id_carrera' => 'Carrera',
             'id_turno' => 'Turno',
+            'id_usuario' => 'Usuario',
             'telefono_uno' => 'Teléfono Uno',
             'telefono_dos' => 'Teléfono Dos',
             'calle' => 'Calle',
@@ -120,120 +121,5 @@ class Alumnos extends \yii\db\ActiveRecord
             'municipio' => 'Municipio',
             'id_ciclo' => 'Ciclo Escolar',
         ];
-    }
-
-    /**
-     * Relación con la tabla Semestre.
-     */
-    public function getSemestreactual()
-    {
-        return $this->hasOne(Semestre::class, ['id_semestre' => 'id_semestreactual']);
-    }
-
-    /**
-     * Relación con la tabla Institucion.
-     */
-    public function getInstitucion()
-    {
-        return $this->hasOne(Institucion::class, ['id_institucion' => 'id_institucion']);
-    }
-
-    /**
-     * Relación con la tabla Grado.
-     */
-    public function getGrado()
-    {
-        return $this->hasOne(Grado::class, ['id_grado' => 'id_grado']);
-    }
-
-    /**
-     * Relación con la tabla Grupos.
-     */
-    public function getGrupo()
-    {
-        return $this->hasOne(Grupos::class, ['id_grupo' => 'id_grupo']);
-    }
-
-    /**
-     * Relación con la tabla Carrera.
-     */
-    public function getCarrera()
-    {
-        return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
-    }
-
-    /**
-     * Relación con la tabla Turnos.
-     */
-    public function getTurno()
-    {
-        return $this->hasOne(Turnos::class, ['id_turno' => 'id_turno']);
-    }
-
-    /**
-     * Relación con la tabla CicloEscolar.
-     */
-    public function getCiclo()
-    {
-        return $this->hasOne(CicloEscolar::class, ['id_ciclo' => 'id_ciclo']);
-    }
-
-    /**
-     * Obtiene las opciones para el campo ENUM `sexo`.
-     *
-     * @return string[]
-     */
-    public static function optsSexo()
-    {
-        return [
-            self::SEXO_F => 'Femenino',
-            self::SEXO_M => 'Masculino',
-        ];
-    }
-
-    /**
-     * Muestra el valor del campo `sexo`.
-     *
-     * @return string
-     */
-    public function displaySexo()
-    {
-        return self::optsSexo()[$this->sexo];
-    }
-
-    /**
-     * Verifica si el sexo es Femenino.
-     *
-     * @return bool
-     */
-    public function isSexoF()
-    {
-        return $this->sexo === self::SEXO_F;
-    }
-
-    /**
-     * Establece el sexo como Femenino.
-     */
-    public function setSexoToF()
-    {
-        $this->sexo = self::SEXO_F;
-    }
-
-    /**
-     * Verifica si el sexo es Masculino.
-     *
-     * @return bool
-     */
-    public function isSexoM()
-    {
-        return $this->sexo === self::SEXO_M;
-    }
-
-    /**
-     * Establece el sexo como Masculino.
-     */
-    public function setSexoToM()
-    {
-        $this->sexo = self::SEXO_M;
     }
 }
