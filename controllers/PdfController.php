@@ -10,6 +10,8 @@ class PdfController extends Controller
 {
     public function actionPdf()
     {
+        $idUsuario = Yii::$app->session->get('user_id');
+
         $cartas = CartaPresentacion::find()
             ->select([
                 'carta_presentacion.*',
@@ -22,6 +24,8 @@ class PdfController extends Controller
                 'ciclo_escolar.ciclo AS ciclo_escolar'
             ])
             ->joinWith(['alumno', 'alumno.carrera', 'semestre', 'ciclo'])
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario') 
+            ->where(['usuarios.id_usuario' => $idUsuario]) 
             ->asArray()
             ->all();
 

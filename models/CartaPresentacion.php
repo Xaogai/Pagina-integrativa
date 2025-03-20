@@ -12,16 +12,19 @@ use Yii;
  * @property int $id_alumno
  * @property string|null $status
  * @property int $id_semestre
+ * @property int $id_carrera
  * @property int $id_ciclo
  * @property string $fecha_emision
- * @property string $fecha_aceptacion
+ * @property string $fecha_aceptacion   
  * @property string $fecha_termino
  *
  * @property Alumnos $alumno
  * @property CicloEscolar $ciclo
  * @property FondoCbt $formato
  * @property Semestre $semestre
+ * @property Carrera $carrera
  */
+
 class CartaPresentacion extends \yii\db\ActiveRecord
 {
 
@@ -47,8 +50,8 @@ class CartaPresentacion extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => null],
-            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
-            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
+            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo', 'id_carrera', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
+            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo', 'id_carrera'], 'integer'],
             [['status'], 'string'],
             [['fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
@@ -56,6 +59,7 @@ class CartaPresentacion extends \yii\db\ActiveRecord
             [['id_semestre'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestre' => 'id_semestre']],
             [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
             [['id_formato'], 'exist', 'skipOnError' => true, 'targetClass' => FondoCbt::class, 'targetAttribute' => ['id_formato' => 'id_fondo']],
+            [['id_carrera'], 'exist', 'skipOnError' => true, 'targetClass' => Carrera::class, 'targetAttribute' => ['id_carrera' => 'id_carrera']],
         ];
     }
 
@@ -68,6 +72,7 @@ class CartaPresentacion extends \yii\db\ActiveRecord
             'id_cartapresentacion' => 'Id Cartapresentacion',
             'id_formato' => 'Id Formato',
             'id_alumno' => 'Id Alumno',
+            'id_carrera' => 'Id Carrera',
             'status' => 'Status',
             'id_semestre' => 'Id Semestre',
             'id_ciclo' => 'Id Ciclo',
@@ -117,6 +122,15 @@ class CartaPresentacion extends \yii\db\ActiveRecord
         return $this->hasOne(Semestre::class, ['id_semestre' => 'id_semestre']);
     }
 
+    /**
+     * Gets query for [[Carrera]].
+     *
+    * @return \yii\db\ActiveQuery
+     */
+    public function getCarrera()
+    {
+        return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
+    }
 
     /**
      * column status ENUM value labels
