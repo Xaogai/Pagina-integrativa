@@ -62,50 +62,65 @@ class SiteController extends Controller
     public function onAuthSuccess(ClientInterface $client)
     {
         $attributes = $client->getUserAttributes();
-        $email = $attributes['email'];
-
-        $usuario = Usuarios::findOne(['correo' => $email]);
-
-        if (!$usuario) {
-            Yii::$app->session->setFlash('error', 'No tienes acceso a la aplicación.');
+    
+        if (!isset($attributes['email'])) {
+            Yii::$app->session->setFlash('error', 'No se pudo obtener el correo electrónico.');
             return $this->redirect(['site/login']);
         }
-
+    
+        $email = $attributes['email'];
+        $usuario = Usuarios::findOne(['correo' => $email]);
+    
+        if (!$usuario) {
+            Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
+            return $this->redirect(['site/login']);
+        }
+    
         Yii::$app->user->login($usuario);
-
-        // Redirigir a una acción que cierre la ventana emergente
-        return $this->redirect(['site/close-popup']);
+    
+        // Redirigir a la página principal o dashboard
+        return $this->redirect(['/alumno']); // O la página que prefieras
     }
+    
 
-    public function actionClosePopup()
-    {
-        // Renderizar una vista que contenga el script para cerrar la ventana emergente
-        return $this->render('close-popup');
-    }
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->redirect(['/alumno']);
         }
-
+    
         $model = new LoginForm();
+        
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->redirect(['/alumno']);
         }
-
-        $model->password = '';
+    
         return $this->render('login', ['model' => $model]);
     }
+    
+
 
     public function actionLogout()
     {
+        // Cerrar sesión en la aplicación
+        Yii::$app->user->logout(true);
+    
+        // Verifica si hay un cliente OAuth en la sesión
         if (Yii::$app->session->has('authClient')) {
-            $client = Yii::$app->authClientCollection->getClient(Yii::$app->session->get('authClient'));
-            $client->revokeToken();
-            Yii::$app->session->remove('authClient');
+            $clientName = Yii::$app->session->get('authClient');
+    
+            // Redirigir al usuario a la página de cierre de sesión del proveedor OAuth
+            switch ($clientName) {
+                case 'google':
+                    return $this->redirect('https://accounts.google.com/Logout');
+                    break;
+                // Agrega más casos para otros proveedores OAuth
+                default:
+                    return $this->redirect(['site/login']);
+            }
         }
-
-        Yii::$app->user->logout();
+    
+        // Redirigir al usuario a la página de login
         return $this->redirect(['site/login']);
     }
 
@@ -124,15 +139,4 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionCheckAccess()
-    {
-        $userId = 1;
-        $permission = 'manageUsers';
-
-        if (Yii::$app->authManager->checkAccess($userId, $permission)) {
-            return "✅ El usuario tiene permisos para gestionar usuarios.";
-        } else {
-            return "❌ El usuario NO tiene permisos.";
-        }
-    }
 }

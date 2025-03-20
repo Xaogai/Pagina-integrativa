@@ -1,24 +1,18 @@
 <?php
-
-/** @var yii\web\View $this */
-/** @var yii\bootstrap5\ActiveForm $form */
-
-/** @var app\models\LoginForm $model */
-
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+    <p>Ingresa tu correo y contraseña para iniciar sesión:</p>
 
     <div class="row">
         <div class="col-lg-5">
-
             <?php $form = ActiveForm::begin([
                 'id' => 'login-form',
                 'fieldConfig' => [
@@ -29,31 +23,43 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+            <?= $form->field($model, 'email')->textInput(['id' => 'email-input', 'autofocus' => true]) ?>
 
-            <?= $form->field($model, 'password')->passwordInput() ?>
-
-            <?= $form->field($model, 'rememberMe')->checkbox([
-                'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            ]) ?>
+            <?= $form->field($model, 'password')->passwordInput(['id' => 'password-input']) ?>
 
             <div class="form-group">
                 <div>
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-warning', 'name' => 'login-button']) ?>
+                    <?= Html::submitButton('Login', [
+                        'class' => 'btn btn-warning',
+                        'name' => 'login-button',
+                        'id' => 'login-button'
+                    ]) ?>
                 </div>
             </div>
 
             <?php ActiveForm::end(); ?>
-
-            <div style="color:#999;">
-                You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
-                To modify the username/password, please check out the code <code>app\models\User::$users</code>.
-            </div>
-
         </div>
     </div>
 </div>
-<?= yii\authclient\widgets\AuthChoice::widget([
-    'baseAuthUrl' => ['site/auth'],
-    'popupMode' => true, // Esto asegura que el enlace se abra en una ventana emergente
-]) ?>
+
+<div id="error-message" style="color: red; display: none;">
+    El dominio del correo no es válido. Solo se permiten correos con dominio @cbt2metepec.edu.mx.
+</div>
+
+<script>
+document.getElementById("login-button").addEventListener("click", function(event) {
+    event.preventDefault(); // Evitar envío inmediato del formulario
+
+    let email = document.getElementById("email-input").value;
+    
+    if (email.endsWith("@cbt2metepec.edu.mx")) { // Verifica si el correo es del dominio permitido
+        window.location.href = "<?= yii\helpers\Url::to(['site/auth', 'authclient' => 'google']) ?>";
+    } else {
+        // Mostrar un mensaje de error
+        document.getElementById("error-message").style.display = 'block';
+        
+        // Evitar el envío del formulario
+        return false;
+    }
+});
+</script>
