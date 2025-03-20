@@ -26,6 +26,12 @@ class AlumnoController extends Controller
 
     public function actionDatosGenerales()
     {
+        $user_id = Yii::$app->session->get('user_id');
+        //$auth_token = Yii::$app->session->get('auth_token');
+
+        echo $user_id;
+        //echo $auth_token . "fffffffffffffff";
+
         $id = Yii::$app->user->identity->id_alumno ?? null;
         $model = $id ? $this->findModel($id) : new Alumnos();
 

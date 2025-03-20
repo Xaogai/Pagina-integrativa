@@ -52,7 +52,9 @@ document.getElementById("login-button").addEventListener("click", function(event
 
     let email = document.getElementById("email-input").value;
     
-    if (email.endsWith("@cbt2metepec.edu.mx")) { // Verifica si el correo es del dominio permitido
+    //REGRESAR ESTO A @ NMMMMMMMMMMMMMMMMMMMMMMMMSSSSSSS
+    //@cbt2metepec.edu.mx
+    if (email.endsWith("@")) { // Verifica si el correo es del dominio permitido
         window.location.href = "<?= yii\helpers\Url::to(['site/auth', 'authclient' => 'google']) ?>";
     } else {
         // Mostrar un mensaje de error
