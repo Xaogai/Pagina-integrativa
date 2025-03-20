@@ -60,30 +60,42 @@ class SiteController extends Controller
     }
 
     public function onAuthSuccess(ClientInterface $client)
-    {
-        $attributes = $client->getUserAttributes();
+{
+    $attributes = $client->getUserAttributes();
     
-        if (!isset($attributes['email'])) {
-            Yii::$app->session->setFlash('error', 'No se pudo obtener el correo electrónico.');
-            return $this->redirect(['site/login']);
-        }
-    
-        $email = $attributes['email'];
-        $usuario = Usuarios::findOne(['correo' => $email]);
-    
-        if (!$usuario) {
-            Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
-            return $this->redirect(['site/login']);
-        }
-
-        Yii::$app->session->set('user_id', $usuario->id);
-        //Yii::$app->session->set('auth_token', $token);
-        Yii::$app->user->login($usuario);
-
-        // Redirigir a la página principal o dashboard
-        return $this->redirect(['/alumno']); // O la página que prefieras
+    // Verifica si se obtuvo el correo electrónico y el ID de Google
+    if (!isset($attributes['email']) || !isset($attributes['id'])) {
+        Yii::$app->session->setFlash('error', 'No se pudo obtener la información necesaria del proveedor.');
+        return $this->redirect(['site/index']); // Redirige a la página principal
     }
     
+    $email = $attributes['email'];
+    $googleId = $attributes['id']; // El ID único de Google
+
+    // Busca al usuario por correo
+    $usuario = Usuarios::findOne(['correo' => $email]);
+
+    // Si el usuario no existe, muestra un error y redirige a la página principal
+    if (!$usuario) {
+        Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
+        return $this->redirect(['site/index']); // Redirige a la página principal
+    }
+
+    // Si el usuario existe pero no tiene el google_id (token), actualízalo
+    if (empty($usuario->token)) {
+        $usuario->token = $googleId; // Guarda el google_id en el campo "token"
+        if (!$usuario->save()) {
+            Yii::$app->session->setFlash('error', 'Error al guardar el token.');
+            return $this->redirect(['site/index']);
+        }
+    }
+
+    // Inicia sesión
+    Yii::$app->user->login($usuario);
+
+    // Redirige al dashboard
+    return $this->redirect(['/alumno']);
+}
 
     public function actionLogin()
     {
