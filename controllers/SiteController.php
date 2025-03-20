@@ -75,9 +75,11 @@ class SiteController extends Controller
             Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
             return $this->redirect(['site/login']);
         }
-    
+
+        Yii::$app->session->set('user_id', $usuario->id);
+        //Yii::$app->session->set('auth_token', $token);
         Yii::$app->user->login($usuario);
-    
+
         // Redirigir a la página principal o dashboard
         return $this->redirect(['/alumno']); // O la página que prefieras
     }
