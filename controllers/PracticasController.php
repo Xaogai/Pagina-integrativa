@@ -6,9 +6,9 @@ use yii\web\Controller;
 use Mpdf\Mpdf;
 use app\models\CartaPresentacion; // Importar el modelo
 
-class PdfController extends Controller
+class PracticasController extends Controller
 {
-    public function actionPdf()
+    public function actionPresentacion()
     {
         $idUsuario = Yii::$app->session->get('user_id');
 

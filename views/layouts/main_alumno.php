@@ -27,8 +27,8 @@ $this->beginPage();
                 <a href="#" class="dropbtn">Prácticas</a>
                 <ul class="submenu">
                     <li><a href="<?= Url::to(['practicas/hoja-datos']) ?>">Hoja de Datos</a></li>
-                    <li><a href="<?= Url::to(['practicas/carta-presentacion']) ?>">Carta de Presentación</a></li>
-                    <li><a href="<?= Url::to(['practicas/carta-termino']) ?>">Carta de Término</a></li>
+                    <li><a href="<?= Url::to(['practicas/presentacion']) ?>">Carta de Presentación</a></li>
+                    <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Carta de Término</a></li>
                 </ul>
             </li>
             
