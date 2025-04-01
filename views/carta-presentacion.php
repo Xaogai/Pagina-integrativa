@@ -6,7 +6,7 @@ use yii\helpers\Html; // Importa la clase Html
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Carta de Presentación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
 <body>
@@ -24,7 +24,7 @@ use yii\helpers\Html; // Importa la clase Html
     <main>
         <?php foreach ($cartas as $carta): ?>
             <p class="title">CBT No. 2, METEPEC</p>
-            <div class="fecha">San Bartolomé, Tlaltelulco, Metepec, Méx., a <span class="fecha_emision"><?= Html::encode($carta['fecha_emision'] ?? 'Fecha no disponible') ?></span></div>
+            <div class="fecha">San Bartolomé, Tlaltelulco, Metepec, Méx., a <p1 class="fecha_emision"><?= Html::encode($carta['fecha_emision'] ?? 'Fecha no disponible') ?></p1></div>
             <p class="presente">P R E S E N T E.</p>
             <div class="contenido">
                 <p>El que suscribe <strong>Mtro. en D. P. Francisco Ricardo López Sotelo, Director Escolar del CBT No. 2, METEPEC</strong>, por este conducto informo a usted que nuestra institución tiene como misión contribuir a una educación integral del estudiante basada en competencias, promoviendo la adquisición de un pensamiento crítico para dar respuesta inmediata a las exigencias de las demandas sociales y laborales, bajo un ambiente de respeto, trabajo en equipo y responsabilidad.</p>
@@ -38,7 +38,7 @@ use yii\helpers\Html; // Importa la clase Html
                 <p>Con la confianza de poder contar con su valioso apoyo, agradezco de antemano el interés por contribuir en el proceso complementario de la formación en campo profesional y el desarrollo de nuestros estudiantes.</p>
             </div>
             <div class="firma">
-                <p>A t e n t a m e n t e</p>
+                <p class="primero">A t e n t a m e n t e</p>
                 <p>Mtro. en D. P. Francisco Ricardo López Sotelo</p>
                 <p>Director Escolar</p>
             </div>
