@@ -14,6 +14,7 @@ use app\models\CicloEscolar;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
+use yii\web\ForbiddenHttpException;
 
 class AlumnoController extends Controller
 {
