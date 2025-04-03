@@ -7,11 +7,12 @@ use Mpdf\Mpdf;
 use app\models\CartaPresentacion; // Importar el modelo
 
 class PracticasController extends Controller
-{
+{   
+    
     public function actionPresentacion()
     {
         $idUsuario = Yii::$app->session->get('user_id');
-
+        
         $cartas = CartaPresentacion::find()
             ->select([
                 'carta_presentacion.*',
@@ -28,10 +29,12 @@ class PracticasController extends Controller
             ->where(['usuarios.id_usuario' => $idUsuario]) 
             ->asArray()
             ->all();
+        
+        # SI carta-presentacion EN LA BASE NO TIENE DATOS
+        #var_dump($cartas); exit;
 
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
         $styleCssFile = Yii::getAlias('@webroot/css/style-presentacion.css');
-
         $resetCss = file_get_contents($resetCssFile);
         $styleCss = file_get_contents($styleCssFile);
 
