@@ -54,18 +54,13 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
-        return $this->render('index'); // Corrección aquí
-    }
-
     public function onAuthSuccess(ClientInterface $client)
     {
         $attributes = $client->getUserAttributes();
         
         if (!isset($attributes['email']) || !isset($attributes['id'])) {
             Yii::$app->session->setFlash('error', 'No se pudo obtener la información necesaria del proveedor.');
-            return $this->redirect(['site/index']);
+            return $this->redirect(['site/login']);
         }
         
         $email = $attributes['email'];
@@ -75,14 +70,14 @@ class SiteController extends Controller
     
         if (!$usuario) {
             Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
-            return $this->redirect(['site/index']);
+            return $this->redirect(['site/login']);
         }
     
         if (empty($usuario->token)) {
             $usuario->token = $googleId;
             if (!$usuario->save()) {
                 Yii::$app->session->setFlash('error', 'Error al guardar el token.');
-                return $this->redirect(['site/index']);
+                return $this->redirect(['site/login']);
             }
         }
     
@@ -135,21 +130,6 @@ class SiteController extends Controller
     
         // Redirigir al usuario a la página de login
         return $this->redirect(['site/login']);
-    }
-
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-            return $this->refresh();
-        }
-        return $this->render('contact', ['model' => $model]);
-    }
-
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 
 }

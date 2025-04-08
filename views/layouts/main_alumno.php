@@ -21,7 +21,7 @@ $this->beginPage();
     <div class="navbar">
         <h2>Alumno</h2>
         <ul>
-            <li><a href="<?= Url::to(['site/index']) ?>">Inicio</a></li>
+            <li><a href="<?= Url::to(['/alumno']) ?>">Inicio</a></li>
             <li><a href="<?= Url::to(['/alumno/alumno/datos-generales']) ?>">Datos del alumno</a></li>
             <li class="dropdown">
                 <a href="#" class="dropbtn">Prácticas</a>

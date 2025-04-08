@@ -4,7 +4,8 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use Mpdf\Mpdf;
-use app\models\CartaPresentacion; // Importar el modelo
+use app\models\CartaPresentacion; 
+use app\models\CartaAceptacion; 
 use app\models\CartaTermino;
 
 class PracticasController extends Controller
@@ -56,6 +57,42 @@ class PracticasController extends Controller
 
     public function actionAceptacion()
     {
+        $idUsuario = Yii::$app->session->get('user_id');
+        
+        $cartas = CartaAceptacion::find()
+            ->select([
+                'carta_aceptacion.*',
+                'alumnos.nombre AS nombre_alumno',
+                'alumnos.apellido_paterno',
+                'alumnos.apellido_materno',
+                'turnos.nombre AS turno',
+                'carrera.nombre AS carrera',
+                'semestre.nombre AS semestre',
+                'ciclo_escolar.ciclo AS ciclo_escolar',
+                'empresa.nombre AS nombre_empresa',
+                'carta_aceptacion.area AS area_empresa',
+                'carta_aceptacion.fecha_inicio_servicio AS fecha_inicial',
+                'carta_aceptacion.fecha_termino_servicio AS fecha_final',
+                'carta_aceptacion.horario AS horarios',
+                'empresa.jefe_inmediato AS nombre_jefe',
+                'empresa.cargo AS cargo_jefe'
+            ])
+            ->joinWith([
+                'alumno' => function($query) {
+                    $query->joinWith(['carrera', 'turno']);
+                },
+                'alumno.hojaDatos', // Relación con hoja_datos
+                'semestre', 
+                'ciclo'
+            ])
+            ->innerJoin('empresa', 'empresa.id_empresa = hoja_datos.id_empresa')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->asArray()
+            ->all();
+
+        #var_dump($cartas); exit;
+
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
         $styleCssFile = Yii::getAlias('@webroot/css/style-aceptacion.css');
 
@@ -64,7 +101,9 @@ class PracticasController extends Controller
 
         $css = $resetCss . "\n" . $styleCss;
 
-        $html = $this->renderPartial('//carta-aceptacion');
+        $html = $this->renderPartial('//carta-aceptacion', [
+            'cartas' => $cartas, 
+        ]);
 
         $mpdf = new Mpdf();
 
