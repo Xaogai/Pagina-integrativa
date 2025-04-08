@@ -123,13 +123,10 @@ class Alumnos extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Carrera]].
-     *
-    * @return \yii\db\ActiveQuery
-     */
+    // En models/Alumnos.php
     public function getCarrera()
     {
         return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
     }
+
 }
