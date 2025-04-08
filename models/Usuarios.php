@@ -17,6 +17,11 @@ class Usuarios extends ActiveRecord implements IdentityInterface
         return static::findOne(['id_usuario' => $id]);
     }
 
+    public function getTipoUsuario()
+    {
+        return $this->tipo_usuario; // Asume que el campo en la tabla se llama tipo_usuario
+    }
+    
     public static function findIdentityByAccessToken($token, $type = null)
     {
         // Si usas tokens de acceso, este método es necesario

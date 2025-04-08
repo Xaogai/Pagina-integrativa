@@ -83,29 +83,60 @@ class SiteController extends Controller
     
         // Inicia sesión
         Yii::$app->user->login($usuario);
-    
         // 🔥 **GUARDA EL ID DEL USUARIO EN LA SESIÓN** 🔥
         Yii::$app->session->set('user_id', $usuario->id);
     
-        // Redirige al dashboard
-        return $this->redirect(['/alumno']);
+        // Verificamos el tipo de usuario y redirigimos
+        if ($usuario->tipo_usuario == 'ESTUDIANTE') {
+            return $this->redirect(['/alumno']);
+        } elseif ($usuario->tipo_usuario == 'VINCULACION') {
+            return $this->redirect(['/vinculacion']);
+        }
+    
+        // Si el tipo de usuario no es reconocido, lo deslogueamos
+        Yii::$app->user->logout();
+        return $this->redirect(['site/login']);
     }
-
+    
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['/alumno']);
+            // Obtener el usuario autenticado
+            $usuario = Yii::$app->user->identity;
+
+            // Verificar el tipo de usuario y redirigir según corresponda
+            if ($usuario->tipo_usuario == 'ESTUDIANTE') {
+                return $this->redirect(['/alumno']); // Redirige a la vista de alumno
+            } elseif ($usuario->tipo_usuario == 'VINCULACION') {
+                return $this->redirect(['/vinculacion']); // Redirige a la vista de vinculación
+            }
+
+            // Si el usuario no es de tipo "alumno" ni "vinculacion", redirigirlo al login
+            Yii::$app->user->logout();
+            return $this->redirect(['site/login']);
         }
-    
+
         $model = new LoginForm();
-        
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['/alumno']);
+            // Obtener el usuario autenticado
+            $usuario = Yii::$app->user->identity;
+
+            // Verificar el tipo de usuario
+            if ($usuario->tipo_usuario == 'alumno') {
+                return $this->redirect(['/alumno']);
+            } elseif ($usuario->tipo_usuario == 'vinculacion') {
+                return $this->redirect(['/vinculacion']);
+            }
+
+            // Si el tipo de usuario no es reconocido, desloguear y redirigir a login
+            Yii::$app->user->logout();
+            return $this->redirect(['site/login']);
         }
-    
+
         return $this->render('login', ['model' => $model]);
     }
-    
+
 
 
     public function actionLogout()

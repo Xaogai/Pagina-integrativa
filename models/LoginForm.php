@@ -22,12 +22,14 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['email', 'password'], 'required'],
-            ['email', 'email'],
+            [['email', 'password'], 'required', 'message' => 'Este campo es obligatorio.'],
+            ['email', 'email', 'message' => 'Ingresa un correo válido.'],
+            ['email', 'match', 'pattern' => '/@cbt2metepec\.edu\.mx$/', 'message' => 'Solo se permiten correos institucionales (@cbt2metepec.edu.mx).'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
         ];
     }
+    
 
     public function validatePassword($attribute, $params)
     {
