@@ -122,4 +122,11 @@ class Alumnos extends \yii\db\ActiveRecord
             'id_ciclo' => 'Ciclo Escolar',
         ];
     }
+
+    // En models/Alumnos.php
+    public function getCarrera()
+    {
+        return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
+    }
+
 }
