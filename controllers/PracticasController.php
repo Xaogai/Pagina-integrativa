@@ -5,6 +5,7 @@ use Yii;
 use yii\web\Controller;
 use Mpdf\Mpdf;
 use app\models\CartaPresentacion; // Importar el modelo
+use app\models\CartaTermino;
 
 class PracticasController extends Controller
 {   
@@ -76,6 +77,43 @@ class PracticasController extends Controller
 
     public function actionTerminacion()
     {
+        $idUsuario = Yii::$app->session->get('user_id');
+
+        $carta = CartaTermino::find()
+            ->select([
+                'carta_termino.*',
+                'alumnos.nombre AS nombre_alumno',
+                'alumnos.apellido_paterno',
+                'alumnos.apellido_materno',
+                'carrera.id_carrera',
+                'carrera.nombre AS carrera',
+                'semestre.nombre AS semestre',
+                'turnos.nombre AS nombre_turno',
+                'empresa.nombre AS nombre_empresa',
+                'empresa.jefe_inmediato',
+                'empresa.cargo',
+                'cualidades.cualidades AS cualidades_carrera' 
+            ])
+            ->joinWith(['alumno', 'alumno.carrera', 'semestre'])
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->innerJoin('hoja_datos', 'hoja_datos.id_alumno = alumnos.id_alumno')
+            ->innerJoin('empresa', 'empresa.id_empresa = hoja_datos.id_empresa')
+            ->innerJoin('cualidades', 'cualidades.id_cualidades = carrera.id_cualidades')
+            ->innerJoin('turnos', 'turnos.id_turno = alumnos.id_turno')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->asArray()
+            ->one();
+
+        #var_dump($carta); exit;
+
+        if (!empty($carta['cualidades_carrera'])) {
+            $cualidadesArray = explode(',', $carta['cualidades_carrera']);
+            $cualidadesArray = array_map('trim', $cualidadesArray);
+            $carta['cualidades_separadas'] = $cualidadesArray;
+        } else {
+            $carta['cualidades_separadas'] = [];
+        }
+
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
         $styleCssFile = Yii::getAlias('@webroot/css/style-termino.css');
 
@@ -84,7 +122,9 @@ class PracticasController extends Controller
 
         $css = $resetCss . "\n" . $styleCss;
 
-        $html = $this->renderPartial('//carta-termino');
+        $html = $this->renderPartial('//carta-termino', [
+            'carta' => $carta, 
+        ]);
 
         $mpdf = new Mpdf();
 
