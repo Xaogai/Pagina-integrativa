@@ -26,6 +26,7 @@ class LoginForm extends Model
             ['email', 'email'],
             ['rememberMe', 'boolean'],
             ['password', 'validatePassword'],
+            ['email', 'match', 'pattern' => '/@cbt2metepec\.edu\.mx$/', 'message' => 'Solo se permiten correos institucionales (@cbt2metepec.edu.mx)'],
         ];
     }
 
