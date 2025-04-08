@@ -19,14 +19,14 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
     <?= Html::hiddenInput('editable', $editable ? '1' : '0', ['id' => 'editable-input']) ?>
 
     <div class="form-row">
-        <?= $form->field($model, 'correo')->input('email', ['class' => 'form-input', 'disabled' => !$editable]) ?>
-        <?= $form->field($model, 'curp')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
-    </div>
-
-    <div class="form-row">
         <?= $form->field($model, 'nombre')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'apellido_paterno')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'apellido_materno')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
+    </div>
+    
+    <div class="form-row">
+        <?= $form->field($model, 'curp')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
+        <?= $form->field($model, 'nss')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
 
     <div class="form-row">
@@ -35,7 +35,6 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
     </div>
 
     <div class="form-row">
-        <?= $form->field($model, 'nss')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'fecha_nacimiento')->input('date', ['class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'sexo')->dropDownList(['F' => 'Femenino', 'M' => 'Masculino'], ['prompt' => 'Seleccione sexo', 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>

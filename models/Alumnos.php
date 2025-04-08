@@ -6,79 +6,51 @@ use Yii;
 
 /**
  * This is the model class for table "alumnos".
- *
- * @property int $id_alumno
- * @property string $correo
- * @property string $curp
- * @property string $nombre
- * @property string $apellido_paterno
- * @property string $apellido_materno
- * @property int $id_semestreactual
- * @property int $id_institucion
- * @property string $nss
- * @property string $fecha_nacimiento
- * @property string|null $sexo
- * @property int $id_grado
- * @property int $id_grupo
- * @property int $id_carrera
- * @property int $id_turno
- * @property int $id_usuario
- * @property string|null $telefono_uno
- * @property string|null $telefono_dos
- * @property string|null $calle
- * @property string|null $numero
- * @property string|null $colonia
- * @property string|null $codigo_postal
- * @property string|null $municipio
- * @property int $id_ciclo
- *
- * @property Carrera $carrera
- * @property CartaAceptacion[] $cartaAceptacions
- * @property CartaPresentacion[] $cartaPresentacions
- * @property CartaTermino[] $cartaTerminos
- * @property CartasAlumno[] $cartasAlumnos
- * @property CicloEscolar $ciclo
- * @property Grado $grado
- * @property Grupos $grupo
- * @property HojaDatos[] $hojaDatos
- * @property Institucion $institucion
- * @property Semestre $semestreactual
- * @property Turnos $turno
- * @property Usuarios $usuario
  */
 class Alumnos extends \yii\db\ActiveRecord
 {
-    /**
-     * ENUM field values
-     */
     const SEXO_F = 'F';
     const SEXO_M = 'M';
 
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
         return 'alumnos';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
             [['sexo', 'telefono_uno', 'telefono_dos', 'calle', 'numero', 'colonia', 'codigo_postal', 'municipio'], 'default', 'value' => null],
-            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required'],
-            [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'integer'],
+
+            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required', 'message' => 'Este campo es obligatorio.'],
+
+            [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'integer', 'message' => 'Debe ser un número entero.'],
+
             [['fecha_nacimiento'], 'date', 'format' => 'php:Y-m-d'],
-            [['sexo'], 'in', 'range' => [self::SEXO_F, self::SEXO_M]],
-            [['correo', 'colonia'], 'string', 'max' => 100],
-            [['curp', 'nss', 'calle'], 'string', 'max' => 50],
-            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'string', 'max' => 80],
-            [['telefono_uno', 'telefono_dos'], 'string', 'max' => 15],
-            [['numero', 'codigo_postal'], 'string', 'max' => 10],
+
+            [['sexo'], 'required', 'message' => 'Seleccione un sexo válido.'],
+            [['sexo'], 'in', 'range' => [self::SEXO_F, self::SEXO_M], 'message' => 'Seleccione un sexo válido.'],
+
+            [['correo', 'colonia'], 'string', 'max' => 100, 'tooLong' => 'No puede exceder los 100 caracteres.'],
+            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'string', 'max' => 80, 'tooLong' => 'No puede exceder los 80 caracteres.'],
+            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'match', 'pattern' => '/^[^\d]+$/', 'message' => 'No debe contener números.'],
+
+            [['curp', 'nss', 'calle'], 'string', 'max' => 50, 'tooLong' => 'No puede exceder los 50 caracteres.'],
+            [['curp'], 'match', 'pattern' => '/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/', 'message' => 'CURP no válida.'],
+            [['nss'], 'match', 'pattern' => '/^(\d{2})(\d{2})(\d{2})\d{5}$/', 'message' => 'NSS no válido.'],
+
+            [['telefono_uno', 'telefono_dos'], 'integer', 'message' => 'No puede contener letras.'],
+            [['telefono_uno', 'telefono_dos'], 'match', 'pattern' => '/^(\d{10})$/', 'message' => 'Número no válido.'],
+
+            [['codigo_postal'], 'string', 'max' => 10, 'tooLong' => 'No puede exceder los 10 caracteres.'],
+            [['codigo_postal'], 'match', 'pattern' => '/^\d{4,5}$/', 'message' => 'Código no válido.'],
+
+            [['numero'], 'integer', 'message' => 'No puede contener letras.'],
+
             [['correo', 'curp', 'nss'], 'unique'],
+
+            [['calle', 'colonia', 'municipio'], 'match', 'pattern' => '/^[a-zA-ZÁÉÍÓÚñáéíóúÑ\s]+$/', 'message' => 'Dirección no válida.'],
+
             [['id_semestreactual'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestreactual' => 'id_semestre']],
             [['id_institucion'], 'exist', 'skipOnError' => true, 'targetClass' => Institucion::class, 'targetAttribute' => ['id_institucion' => 'id_institucion']],
             [['id_grado'], 'exist', 'skipOnError' => true, 'targetClass' => Grado::class, 'targetAttribute' => ['id_grado' => 'id_grado']],
@@ -90,9 +62,6 @@ class Alumnos extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
@@ -123,10 +92,8 @@ class Alumnos extends \yii\db\ActiveRecord
         ];
     }
 
-    // En models/Alumnos.php
     public function getCarrera()
     {
         return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
     }
-
 }

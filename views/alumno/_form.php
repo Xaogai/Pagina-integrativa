@@ -12,7 +12,6 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'apellido_paterno')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'apellido_materno')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'correo')->input('email') ?>
     <?= $form->field($model, 'curp')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'nss')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'fecha_nacimiento')->input('date') ?>
