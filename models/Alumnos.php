@@ -129,4 +129,16 @@ class Alumnos extends \yii\db\ActiveRecord
         return $this->hasOne(Carrera::class, ['id_carrera' => 'id_carrera']);
     }
 
+    // En models/Alumnos.php
+    public function getTurno()
+    {
+        return $this->hasOne(Turnos::className(), ['id_turno' => 'id_turno']);
+    }
+
+    // En models/Alumnos.php
+    public function getHojaDatos()
+    {
+        return $this->hasOne(HojaDatos::className(), ['id_alumno' => 'id_alumno']);
+    }
+
 }

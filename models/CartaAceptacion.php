@@ -173,4 +173,11 @@ class CartaAceptacion extends \yii\db\ActiveRecord
     {
         $this->status = self::STATUS_RECHAZADO;
     }
+
+    // En models/CartaAceptacion.php
+    public function getEmpresa()
+    {
+        return $this->hasOne(Empresa::className(), ['id_empresa' => 'id_empresa']);
+    }
+
 }
