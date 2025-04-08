@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id_empresa
  * @property string $nombre
+ * @property string $jefe_inmediato
  * @property string $perfil_profesional
  * @property string $cargo
  * @property string $nombre_lugar
@@ -43,8 +44,8 @@ class Empresa extends \yii\db\ActiveRecord
     {
         return [
             [['logo'], 'default', 'value' => null],
-            [['nombre', 'perfil_profesional', 'cargo', 'nombre_lugar', 'calle', 'colonia', 'numero', 'codigo_postal', 'municipio', 'telefono_uno', 'telefono_dos', 'correo'], 'required'],
-            [['nombre', 'perfil_profesional', 'calle', 'colonia', 'correo', 'logo'], 'string', 'max' => 100],
+            [['nombre', 'jefe_inmediato', 'perfil_profesional', 'cargo', 'nombre_lugar', 'calle', 'colonia', 'numero', 'codigo_postal', 'municipio', 'telefono_uno', 'telefono_dos', 'correo'], 'required'],
+            [['nombre', 'jefe_inmediato', 'perfil_profesional', 'calle', 'colonia', 'correo', 'logo'], 'string', 'max' => 100],
             [['cargo', 'municipio'], 'string', 'max' => 80],
             [['nombre_lugar'], 'string', 'max' => 150],
             [['numero'], 'string', 'max' => 10],
@@ -59,7 +60,8 @@ class Empresa extends \yii\db\ActiveRecord
     {
         return [
             'id_empresa' => 'Id Empresa',
-            'nombre' => 'Nombre',
+            'nombre' => 'Nombre Empresa',
+            'jefe_inmediato' => 'Jefe inmediato',
             'perfil_profesional' => 'Perfil Profesional',
             'cargo' => 'Cargo',
             'nombre_lugar' => 'Nombre Lugar',
