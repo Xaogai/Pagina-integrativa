@@ -48,18 +48,35 @@ class CartaAceptacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status'], 'default', 'value' => null],
-            [['id_alumno', 'id_semestre', 'id_ciclo', 'area', 'fecha_inicio_servicio', 'fecha_termino_servicio', 'horario', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
+            [['horario', 'area', 'fecha_aceptacion', 'fecha_termino'], 'required'],
             [['id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
             [['status'], 'string'],
-            [['fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
+            [['fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'date', 'format' => 'php:Y-m-d'],
             [['area'], 'string', 'max' => 100],
             [['horario'], 'string', 'max' => 200],
+            ['status', 'default', 'value' => self::STATUS_EN_REVISION],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
-            [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
-            [['id_semestre'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestre' => 'id_semestre']],
-            [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            // Asignar fechas automáticas si no están seteadas
+            if ($this->isNewRecord) {
+                $this->fecha_emision = date('Y-m-d');
+                $this->fecha_inicio_servicio = date('Y-m-d');
+                $this->status = self::STATUS_EN_REVISION;
+            }
+            
+            // Asegurar que fecha_termino_servicio tenga valor
+            if (empty($this->fecha_termino_servicio)) {
+                $this->fecha_termino_servicio = $this->fecha_termino;
+            }
+            
+            return true;
+        }
+        return false;
     }
 
     /**
