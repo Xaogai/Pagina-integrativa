@@ -124,3 +124,62 @@ input[type="date"] {
     font-size: 14px;
     color: #555;
 }
+
+@media (max-width: 768px) {
+    .alumno-form {
+        max-width: 100%;
+        margin: 0;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+        margin-bottom: 10px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .form-input select {
+        padding-right: 25px;
+        background-size: 16px;
+        background-position: right 8px center;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    input[type="date"] {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .help-block {
+        font-size: 12px;
+    }
+}

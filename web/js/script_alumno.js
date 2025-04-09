@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Simular estado del estudiante
-    let estadoEstudiante = "No has iniciado tus prácticas."; // Puedes cambiar esto según los datos
 
-    // Mostrar en el div correspondiente
-    document.getElementById("estado").textContent = estadoEstudiante;
+    const menuIcon = document.querySelector('.navbar .material-symbols-outlined');
+    const navbar = document.querySelector('.navbar');
+    
+    if (menuIcon) {
+        menuIcon.addEventListener('click', function() {
+            navbar.classList.toggle('collapsed');
+        });
+    }
 });

@@ -4,7 +4,13 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 
 $this->registerCssFile('@web/css/formulario_alumno.css');
+
 ?>
+
+<div class="titulo">
+    <h1>Datos del Alumno</h1>
+    <p>Ingresa tus datos alumno<br></p><br>
+</div>
 
 <div class="alumno-form">
     <?php if (Yii::$app->session->hasFlash('success')): ?>

@@ -11,6 +11,7 @@ $this->beginPage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= Html::encode($this->title) ?></title>
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/estilos_alumno.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=menu" />
     <script src="<?= Yii::$app->request->baseUrl ?>/js/script_alumno.js" defer></script>
     <?php $this->head() ?>
 </head>
@@ -19,7 +20,7 @@ $this->beginPage();
 
 <div class="main-container">
     <div class="navbar">
-        <h2>Alumno</h2>
+        <div class="titulo"><h2>Alumno</h2><span class="material-symbols-outlined">menu</span></div>
         <ul>
             <li><a href="<?= Url::to(['/alumno']) ?>">Inicio</a></li>
             <li><a href="<?= Url::to(['/alumno/alumno/datos-generales']) ?>">Datos del alumno</a></li>
@@ -43,13 +44,7 @@ $this->beginPage();
     </div>
 
     <div class="main-content">
-        <h1>Panel del Alumno</h1>
         <?= $content ?>
-
-        <div class="estado-estudiante">
-            <h3>Estado del Estudiante</h3>
-            <p id="estado"></p>
-        </div>
     </div>
 </div>
 
