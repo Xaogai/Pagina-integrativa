@@ -79,7 +79,7 @@ body {
 
 .navbar.collapsed {
     width: 10%;
-    transition: left 0.3s ease; 
+    transition: all 0.3s ease; 
 }
 
 .navbar.collapsed > .titulo
@@ -146,7 +146,7 @@ footer {
         width: 20%;
         z-index: 1000; 
         left: -5%; 
-        transition: left 0.3s ease; 
+        transition: all 0.3s ease; 
     }
 
     .navbar.collapsed {
@@ -197,11 +197,13 @@ footer {
         list-style: none;
         padding: 0;
         display: block;
+        transition: all 0.3s ease; 
     }
     
     .navbar.collapsed ul li {
         padding: 10px;
         border-bottom: 1px solid rgba(255,255,255,0.1); 
+        transition: all 0.3s ease; 
     }
     
     .navbar.collapsed ul li a {
@@ -216,5 +218,6 @@ footer {
         color: #c8c8c8;
         background-color: rgba(255,255,255,0.1); 
         padding-left: 15px;
+        transition: all 0.3s ease; 
     }
 }
