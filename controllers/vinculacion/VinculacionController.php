@@ -29,10 +29,9 @@ class VinculacionController extends Controller
 
     public function actionPresentacion()
     {
-        $idUsuario = Yii::$app->session->get('user_id');
-
         $cartas = CartaPresentacion::find()
             ->select([
+                'carta_presentacion.*',
                 'alumnos.nombre',
                 'alumnos.apellido_paterno',
                 'alumnos.apellido_materno',
@@ -49,7 +48,6 @@ class VinculacionController extends Controller
                 'semestre',
                 'ciclo'
             ])
-            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
             ->asArray()
             ->all();
             var_dump($cartas); exit;
@@ -61,10 +59,9 @@ class VinculacionController extends Controller
 
     public function actionAceptacion()
     {
-        $idUsuario = Yii::$app->session->get('user_id');
-    
         $cartas = CartaAceptacion::find()
             ->select([
+                'carta_aceptacion.*',
                 'alumnos.nombre',
                 'alumnos.apellido_paterno',
                 'alumnos.apellido_materno',
@@ -78,10 +75,10 @@ class VinculacionController extends Controller
                 'alumno' => function($query) {
                     $query->joinWith(['carrera', 'turno']);
                 },
+                'alumno.hojaDatos',
                 'semestre',
                 'ciclo'
             ])
-            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
             ->asArray()
             ->all();
             var_dump($cartas); exit;
@@ -93,10 +90,9 @@ class VinculacionController extends Controller
 
     public function actionTerminacion()
     {
-        $idUsuario = Yii::$app->session->get('user_id');
-    
         $cartas = CartaTermino::find()
             ->select([
+                'carta_termino.*',
                 'alumnos.nombre',
                 'alumnos.apellido_paterno',
                 'alumnos.apellido_materno',
@@ -113,7 +109,6 @@ class VinculacionController extends Controller
                 'semestre',
                 'ciclo'
             ])
-            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
             ->asArray()
             ->all();
             var_dump($cartas); exit;

@@ -26,10 +26,10 @@ $this->beginPage();
             <li class="dropdown">
                 <a href="#" class="dropbtn">Prácticas</a>
                 <ul class="submenu">
-                    <li><a href="<?= Url::to(['empresa/datos-empresa']) ?>">Hojas de Datos</a></li>
-                    <li><a href="<?= Url::to(['practicas/presentacion']) ?>">Cartas de Presentación</a></li>
-                    <li><a href="<?= Url::to(['practicas/aceptacion']) ?>">Cartas de Aceptacion</a></li>
-                    <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Cartas Término</a></li>
+                    <li><a href="<?= Url::to(['vinculacion/datos']) ?>">Hojas de Datos</a></li>
+                    <li><a href="<?= Url::to(['vinculacion/aceptacion']) ?>">Cartas de Aceptacion</a></li>
+                    <li><a href="<?= Url::to(['vinculacion/presentacion']) ?>">Cartas de Presentación</a></li>
+                    <li><a href="<?= Url::to(['vinculacion/terminacion']) ?>">Cartas Término</a></li>
                 </ul>
             </li>
             
