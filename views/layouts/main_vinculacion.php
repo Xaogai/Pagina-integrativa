@@ -22,13 +22,14 @@ $this->beginPage();
         <h2>Alumno</h2>
         <ul>
             <li><a href="<?= Url::to(['/alumno']) ?>">Inicio</a></li>
-            <li><a href="<?= Url::to(['/alumno/alumno/datos-generales']) ?>">Datos del vvvmfrejvnevnun</a></li>
+            <li><a href="<?= Url::to(['/alumno/alumno/datos-generales']) ?>">Datos del </a></li>
             <li class="dropdown">
                 <a href="#" class="dropbtn">Prácticas</a>
                 <ul class="submenu">
-                    <li><a href="<?= Url::to(['empresa/datos-empresa']) ?>">Hoja de Datos</a></li>
-                    <li><a href="<?= Url::to(['practicas/presentacion']) ?>">Carta de Presentación</a></li>
-                    <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Carta de Término</a></li>
+                    <li><a href="<?= Url::to(['empresa/datos-empresa']) ?>">Hojas de Datos</a></li>
+                    <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Cartas de Aceptación</a></li>
+                    <li><a href="<?= Url::to(['practicas/presentacion']) ?>">Cartas de Presentación</a></li>
+                    <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Cartas de Término</a></li>
                 </ul>
             </li>
             
@@ -42,7 +43,7 @@ $this->beginPage();
     </div>
 
     <div class="main-content">
-        <h1>Panel del Alumno</h1>
+        <h1>Panel del vinculacion</h1>
         <?= $content ?>
 
         <div class="estado-estudiante">
