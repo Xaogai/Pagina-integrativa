@@ -108,5 +108,10 @@ class Alumnos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(HojaDatos::className(), ['id_alumno' => 'id_alumno']);
     }
+    
+    public function getGrupo()
+    {
+        return $this->hasOne(Grupos::className(), ['id_grupo' => 'id_grupo']);
+    }
 
 }
