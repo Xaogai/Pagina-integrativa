@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 
-$this->title = 'Panel del Alumno';
+$this->title = 'Panel de Vinculacion';
 ?>
 
 <div>
