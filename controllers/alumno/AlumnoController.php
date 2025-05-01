@@ -15,6 +15,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
+use yii\helpers\VarDumper;
+
 
 class AlumnoController extends Controller
 {
@@ -28,24 +30,23 @@ class AlumnoController extends Controller
     public function actionDatosGenerales()
     {
         $user_id = Yii::$app->session->get('user_id');
-    
+
         if (!$user_id) {
             throw new ForbiddenHttpException('No tienes permiso para acceder a esta página.');
         }
-    
+
         $model = Alumnos::findOne(['id_usuario' => $user_id]);
-    
+
         if (!$model) {
             $model = new Alumnos();
             $model->id_usuario = $user_id;
         }
-    
-        // Verificar si el formulario fue enviado con la acción de edición
+
         $editable = Yii::$app->request->post('editable') == '1';
-    
+
         if ($model->load(Yii::$app->request->post())) {
             $accion = Yii::$app->request->post('accion');
-    
+
             if ($accion === 'aceptar') {
                 if ($model->validate() && $model->save()) {
                     Yii::$app->session->setFlash('success', 'Datos guardados correctamente.');
@@ -53,10 +54,10 @@ class AlumnoController extends Controller
                 } else {
                     Yii::$app->session->setFlash('error', 'Error al guardar los datos.');
                 }
-                $editable = false; // Deshabilitar los campos después de guardar
+                $editable = false;
             }
         }
-    
+
         return $this->render('/alumno/datos-generales', [
             'model' => $model,
             'editable' => $editable,
@@ -69,27 +70,39 @@ class AlumnoController extends Controller
             'ciclos' => ArrayHelper::map(CicloEscolar::find()->all(), 'id_ciclo', 'ciclo'),
         ]);
     }
-    
-
-
 
     public function actionCreate()
     {
-        $model = new Alumnos();
+        // Verificar sesión del alumno
+        $idUsuario = Yii::$app->session->get('user_id');
+        if (!$idUsuario) {
+            Yii::$app->session->setFlash('error', 'No se encontró la sesión del usuario.');
+            return $this->redirect(['site/login']);
+        }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+        // Buscar si ya existe un registro para este alumno
+        $model = Alumnos::findOne(['id_usuario' => $idUsuario]);
+
+        // Crear nuevo alumno
+        $model = new Alumnos();
+        $model->id_usuario = $idUsuario;
+        $model->id_semestreactual = $this->obtenerSemestreActual();
+        $model->id_ciclo = $this->obtenerCicloActual();
+
+        if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Alumno registrado correctamente.');
-                return $this->redirect(['view', 'id' => $model->id_alumno]);
+                return $this->redirect(['datos-generales']);
             } else {
-                Yii::$app->session->setFlash('error', 'No se pudo registrar el alumno.');
+                Yii::$app->session->setFlash('error', 'Error al guardar: ' . print_r($model->errors, true));
             }
         }
 
-        return $this->render('/alumno/create', [
+        return $this->render('/alumno/datos-generales', [
             'model' => $model,
-            'instituciones' => ArrayHelper::map(Institucion::find()->all(), 'id_institucion', 'nombre'),
+            'editable' => Yii::$app->request->post('editable', false),
             'semestres' => ArrayHelper::map(Semestre::find()->all(), 'id_semestre', 'nombre'),
+            'instituciones' => ArrayHelper::map(Institucion::find()->all(), 'id_institucion', 'nombre'),
             'grados' => ArrayHelper::map(Grado::find()->all(), 'id_grado', 'nombre'),
             'grupos' => ArrayHelper::map(Grupos::find()->all(), 'id_grupo', 'nombre'),
             'carreras' => ArrayHelper::map(Carrera::find()->all(), 'id_carrera', 'nombre'),
@@ -117,5 +130,17 @@ class AlumnoController extends Controller
         }
 
         throw new NotFoundHttpException('El alumno no existe.');
+    }
+
+    private function obtenerSemestreActual()
+    {
+        // Aquí va la lógica para determinar el semestre actual, por ejemplo:
+        return Semestre::find()->orderBy(['id_semestre' => SORT_DESC])->one()->id_semestre ?? null;
+    }
+
+    private function obtenerCicloActual()
+    {
+        // Aquí va la lógica para determinar el ciclo actual, por ejemplo:
+        return CicloEscolar::find()->orderBy(['id_ciclo' => SORT_DESC])->one()->id_ciclo ?? null;
     }
 }
