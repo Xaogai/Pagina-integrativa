@@ -43,6 +43,7 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
     </div>
 
     <div class="form-row">
+        <?= $form->field($model, 'rfc')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'correo')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'logo')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>

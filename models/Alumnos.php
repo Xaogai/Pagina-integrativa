@@ -112,15 +112,15 @@ class Alumnos extends \yii\db\ActiveRecord
     }
 
     public function beforeSave($insert)
-        {
-            if (parent::beforeSave($insert)) {
-                if ($insert) {
-                    $this->fecha_insercion = date('Y-m-d H:i:s'); // Solo la primera vez
-                }
-                $this->fecha_modificacion = date('Y-m-d H:i:s'); // Siempre que se guarde
-                return true;
+    {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->fecha_insercion = date('Y-m-d H:i:s'); // Solo la primera vez
             }
-            return false;
+            $this->fecha_modificacion = date('Y-m-d H:i:s'); // Siempre que se guarde
+            return true;
         }
+        return false;
+    }
 
 }
