@@ -33,7 +33,7 @@ class HojaDatosController extends Controller
         ]);
 
         if ($hojaExistente) {
-            return $this->redirect(['ver-hoja-datos', 'id' => $hojaExistente->id_hojadatos]);
+            return $this->redirect(['empresa/datos-empresa', 'id' => $hojaExistente->id_hojadatos]);
         }
 
         // Obtener el formato VIGENTE

@@ -58,6 +58,35 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
     </div>
 
     <?php ActiveForm::end(); ?>
+    <?php
+        use app\models\HojaDatos;
+
+        // Verifica si hay hoja de datos relacionada
+        $idAlumno = Yii::$app->user->identity->id_alumno ?? null;
+        $idEmpresa = $model->id_empresa ?? null;
+
+        $hojaDatos = null;
+        if ($idAlumno && $idEmpresa) {
+            $hojaDatos = HojaDatos::find()
+                ->where(['id_alumno' => $idAlumno, 'id_empresa' => $idEmpresa])
+                ->one();
+        }
+
+        // Botón activo solo si hay hoja de datos y no está en modo edición
+        $botonActivo = $hojaDatos && !$editable;
+
+        echo Html::a(
+            '📄 Generar PDF',
+            ['practicas/datos'],
+            [
+                'class' => 'btn btn-primary mt-2' . ($botonActivo ? '' : ' disabled'),
+                'title' => $botonActivo ? 'Generar PDF de Hoja de Datos' : 'Primero guarda la hoja de datos',
+                'aria-disabled' => $botonActivo ? 'false' : 'true',
+                'target' => '_blank'
+            ]
+        );
+        ?>
+
 </div>
 
 <script>
