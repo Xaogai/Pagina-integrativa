@@ -51,16 +51,17 @@ echo $this->render('//components/dialog_box');
     <div class="form-row">
         <?= $form->field($model, 'nss')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'fecha_nacimiento')->input('date', ['class' => 'form-input', 'disabled' => !$editable]) ?>
-        <?= $form->field($model, 'sexo')->dropDownList(['F' => 'Femenino', 'M' => 'Masculino'], ['prompt' => 'Seleccione sexo', 'class' => 'form-input', 'disabled' => !$editable]) ?>
+        <?= $form->field($model, 'otra_institucion')->dropDownList(['ISSEMYM' => 'ISSEMYM', 'ISSSTE' => 'ISSSTE'], ['prompt' => 'Seleccione otra institucion', 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
 
     <div class="form-row">
+    <?= $form->field($model, 'sexo')->dropDownList(['F' => 'Femenino', 'M' => 'Masculino'], ['prompt' => 'Seleccione sexo', 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'id_grado')->dropDownList($grados, ['prompt' => 'Seleccione un grado', 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'id_grupo')->dropDownList($grupos, ['prompt' => 'Seleccione un grupo', 'class' => 'form-input', 'disabled' => !$editable]) ?>
-        <?= $form->field($model, 'id_carrera')->dropDownList($carreras, ['prompt' => 'Seleccione una carrera', 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
 
     <div class="form-row">
+    <?= $form->field($model, 'id_carrera')->dropDownList($carreras, ['prompt' => 'Seleccione una carrera', 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'id_turno')->dropDownList($turnos, ['prompt' => 'Seleccione un turno', 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'id_ciclo')->dropDownList($ciclos, ['prompt' => 'Seleccione un ciclo', 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
