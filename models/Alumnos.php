@@ -28,6 +28,8 @@ class Alumnos extends \yii\db\ActiveRecord
 
             [['fecha_nacimiento'], 'date', 'format' => 'php:Y-m-d'],
 
+            [['fecha_insercion', 'fecha_modificacion'], 'safe'],
+
             [['sexo'], 'required', 'message' => 'Seleccione un sexo válido.'],
             [['sexo'], 'in', 'range' => [self::SEXO_F, self::SEXO_M], 'message' => 'Seleccione un sexo válido.'],
 
@@ -112,6 +114,18 @@ class Alumnos extends \yii\db\ActiveRecord
     public function getGrupo()
     {
         return $this->hasOne(Grupos::className(), ['id_grupo' => 'id_grupo']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->fecha_insercion = date('Y-m-d H:i:s'); // Solo la primera vez
+            }
+            $this->fecha_modificacion = date('Y-m-d H:i:s'); // Siempre que se guarde
+            return true;
+        }
+        return false;
     }
 
 }

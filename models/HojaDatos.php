@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+use app\models\Fondo_CBT;
 
 use Yii;
 
@@ -49,16 +50,16 @@ class HojaDatos extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => null],
-            [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
+            [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'required'],
             [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'integer'],
             [['status'], 'string'],
-            [['fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
+            [['fecha_emision', 'fecha_aceptacion', 'fecha_termino','fecha_insercion'], 'safe'],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
             [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
             [['id_empresa'], 'exist', 'skipOnError' => true, 'targetClass' => Empresa::class, 'targetAttribute' => ['id_empresa' => 'id_empresa']],
             [['id_semestre'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestre' => 'id_semestre']],
             [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
-            [['id_formato'], 'exist', 'skipOnError' => true, 'targetClass' => FondoCbt::class, 'targetAttribute' => ['id_formato' => 'id_fondo']],
+            [['id_formato'], 'exist', 'skipOnError' => true, 'targetClass' => Fondo_CBT::class, 'targetAttribute' => ['id_formato' => 'id_fondo']],
         ];
     }
 
@@ -78,6 +79,7 @@ class HojaDatos extends \yii\db\ActiveRecord
             'fecha_emision' => 'Fecha Emision',
             'fecha_aceptacion' => 'Fecha Aceptacion',
             'fecha_termino' => 'Fecha Termino',
+            'fecha_insercion' => 'Fecha Insercion'
         ];
     }
 
@@ -118,7 +120,7 @@ class HojaDatos extends \yii\db\ActiveRecord
      */
     public function getFormato()
     {
-        return $this->hasOne(FondoCbt::class, ['id_fondo' => 'id_formato']);
+        return $this->hasOne(Fondo_CBT::class, ['id_fondo' => 'id_formato']);
     }
 
     /**

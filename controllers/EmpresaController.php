@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Alumnos;
 use app\models\Empresa;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 
 class EmpresaController extends Controller
 {
@@ -14,64 +14,69 @@ class EmpresaController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('empresa/datos_empresa');
+        return $this->redirect(['datos-empresa']);
     }
 
+    /**
+     * Acción para crear/actualizar los datos de la empresa
+     */
     public function actionDatosEmpresa()
-{
-    // Buscar la primera empresa registrada (ajustar según tu lógica)
-    $model = Empresa::find()->orderBy(['id_empresa' => SORT_DESC])->one();
-
-    // Si no existe, crear una nueva
-    if (!$model) {
-        $model = new Empresa();
-    }
-
-    // Verificar si el formulario fue enviado con la acción de edición
-    $editable = Yii::$app->request->post('editable') == '1';
-
-    if ($model->load(Yii::$app->request->post())) {
-        $accion = Yii::$app->request->post('accion');
-
-        if ($accion === 'aceptar') {
-            if ($model->validate() && $model->save()) {
-                Yii::$app->session->setFlash('success', 'Datos de la empresa guardados correctamente.');
-
-                // ❗ En lugar de redireccionar, simplemente cambiamos a modo solo lectura
-                $editable = false;
-            } else {
-                Yii::$app->session->setFlash('error', 'Error al guardar los datos.');
-            }
-        }
-    }
-
-    return $this->render('/empresa/datos_empresa', [
-        'model' => $model,
-        'editable' => $editable,
-    ]);
-}
-
-    
-    public function actionView($id)
     {
-        return $this->render('/alumno/view', [
-            'model' => $this->findModel($id),
+        // Verificar sesión del alumno
+        $idUsuario = Yii::$app->session->get('user_id');
+        if (!$idUsuario) {
+            Yii::$app->session->setFlash('error', 'Debes iniciar sesión primero.');
+            return $this->redirect(['site/login']);
+        }
+
+        // Buscar si ya existe un registro de empresa para este alumno
+        $model = Empresa::find()
+            ->orderBy(['id_empresa' => SORT_DESC])
+            ->one();
+
+        if (!$model) {
+            $model = new Empresa();
+        }
+
+        $model->fecha_insercion = date('Y-m-d H:i:s'); // Asignar fecha siempre
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Empresa guardada correctamente.');
+            return $this->redirect(['hoja-datos/crear-hoja-datos', 'idEmpresa' => $model->id_empresa]);
+        }
+
+        // Si hay errores, mostrarlos
+        if ($model->hasErrors()) {
+            Yii::$app->session->setFlash('error', 'Error al guardar: ' . implode(' ', $model->getFirstErrors()));
+        }
+
+        return $this->render('/empresa/datos_empresa', [
+            'model' => $model,
+            'editable' => Yii::$app->request->post('editable', false),
         ]);
     }
 
-    protected function findModel($id)
+    /**
+     * Acción para ver los datos de la empresa (solo lectura)
+     */
+    public function actionVerEmpresa()
     {
-        $model = Alumnos::find()
-            ->with(['semestre', 'institucion', 'grado', 'grupo', 'carrera', 'turno', 'cicloEscolar'])
-            ->where(['id_alumno' => $id])
-            ->one();
-
-        if ($model !== null) {
-            return $model;
+        $idUsuario = Yii::$app->session->get('user_id');
+        if (!$idUsuario) {
+            throw new ForbiddenHttpException('Acceso denegado. Debes iniciar sesión.');
         }
 
-        throw new NotFoundHttpException('El alumno no existe.');
-    }
+        $model = Empresa::find()
+            ->orderBy(['id_empresa' => SORT_DESC])
+            ->one();
 
-    
+        if (!$model) {
+            Yii::$app->session->setFlash('info', 'No hay datos de empresa registrados.');
+            return $this->redirect(['datos-empresa']);
+        }
+
+        return $this->render('/empresa/ver_empresa', [
+            'model' => $model,
+        ]);
+    }
 }

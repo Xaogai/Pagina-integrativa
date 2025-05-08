@@ -3,8 +3,16 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 
+// Registrar recursos
 $this->registerCssFile('@web/css/formulario_alumno.css');
+$this->registerCssFile('@web/css/mensajes.css');
+$this->registerJsFile('https://kit.fontawesome.com/10b8e36e08.js', ['crossorigin' => 'anonymous']);
+$this->registerJsFile('@web/js/custom-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/js/manipula-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 
+
+// Incluir el componente de diálogo
+echo $this->render('//components/dialog_box');
 ?>
 
 <div class="titulo">
@@ -29,10 +37,10 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
         <?= $form->field($model, 'apellido_paterno')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'apellido_materno')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
-    
+
     <div class="form-row">
+        <?= $form->field($model, 'correo')->input('email', ['class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'curp')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
-        <?= $form->field($model, 'nss')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
 
     <div class="form-row">
@@ -41,6 +49,7 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
     </div>
 
     <div class="form-row">
+        <?= $form->field($model, 'nss')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'fecha_nacimiento')->input('date', ['class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'sexo')->dropDownList(['F' => 'Femenino', 'M' => 'Masculino'], ['prompt' => 'Seleccione sexo', 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
@@ -74,25 +83,14 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
 
     <div class="form-group">
         <?php if ($editable): ?>
-            <?= Html::submitButton('Aceptar', ['class' => 'btn btn-primary', 'name' => 'accion', 'value' => 'aceptar']) ?>
+            <?= Html::button('Aceptar', [
+                'class' => 'btn btn-primary',
+                'id' => 'btn-aceptar-dialog'
+            ]) ?>
         <?php else: ?>
             <?= Html::button('Editar', ['class' => 'btn btn-secondary', 'id' => 'btn-editar']) ?>
-        <?php endif; ?>
+        <?php endif;?>
     </div>
 
     <?php ActiveForm::end(); ?>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const btnEditar = document.getElementById('btn-editar');
-        const editableInput = document.getElementById('editable-input');
-
-        if (btnEditar) {
-            btnEditar.addEventListener('click', function () {
-                editableInput.value = '1'; // Cambiar el valor oculto
-                document.forms[0].submit(); // Enviar el formulario para habilitar edición
-            });
-        }
-    });
-</script>
