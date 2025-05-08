@@ -1,5 +1,5 @@
 <?php
-namespace app\controllers;
+namespace app\controllers\vinculacion;
 
 use Yii;
 use yii\web\Controller;
@@ -57,12 +57,21 @@ class CartasVincController extends Controller
     }
 
     public function actionAceptacion()
-    {
-        $idUsuario = Yii::$app->session->get('user_id');
+    {   
+
+        $request = Yii::$app->request;
+        $idUsuario = $request->post('id');  
+
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+
+        $this->idUsuario = $idUsuario;
         
         $cartas = CartaAceptacion::find()
             ->select([
                 'carta_aceptacion.*',
+                'alumnos.id_alumno',
                 'alumnos.nombre AS nombre_alumno',
                 'alumnos.apellido_paterno',
                 'alumnos.apellido_materno',
