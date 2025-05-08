@@ -44,11 +44,6 @@ $this->beginPage();
 
     <div class="main-content">
         <?= $content ?>
-
-        <div class="estado-estudiante">
-            <h3>Estado del Estudiante</h3>
-            <p id="estado"></p>
-        </div>
     </div>
 </div>
 

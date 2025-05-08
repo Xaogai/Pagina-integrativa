@@ -1,0 +1,121 @@
+header
+{
+    padding-bottom: 2%;
+}
+
+.filtros
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.contenido
+{
+    padding: 1%;
+    width: 33.3%;
+}
+
+.largo
+{
+    width: 66.65%;
+}
+
+.completo
+{
+    width: 100%;
+}
+
+.titulo-filtro
+{
+    font-weight: bold;
+}
+
+.contenido select, .contenido input
+{
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid ;
+}
+
+.botones
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    padding: 1% 0;
+}
+
+.blank
+{
+    width: 50%;
+}
+
+.botones button, .botones input
+{
+    border-radius: 4px;
+    border: 1px solid ;
+    width: 20%;
+    padding: 5px;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    font-weight: normal;
+    text-align: center;
+}
+
+.botones button:hover, .botones input:hover
+{
+    background-color: #286090;
+}
+
+table
+{
+    width: 100%;
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+}
+
+thead
+{
+    text-align: justify;
+    background-color: #d9edf7;
+}
+
+thead, tbody, tr
+{
+    border: 1px solid #ddd;
+}
+
+tr, th, td
+{
+    padding: 3px;
+}
+
+tbody tr
+{
+    cursor: pointer;
+}
+
+tbody tr:nth-child(odd):hover
+{
+    background-color: #f0f0f0;
+}
+  
+
+tr:nth-child(even):hover
+{
+    background-color: #FAF2CC;
+}
+
+tr:nth-child(even)
+{
+    background-color: #fcf8e3;
+}
+
+.hidden
+{
+    display: none;
+}

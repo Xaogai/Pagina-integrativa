@@ -52,7 +52,7 @@ class VinculacionController extends Controller
             ->all();
             var_dump($cartas); exit;
 
-        return $this->renderPartial('/vinculacion/hoja-presentacion', [
+        return $this->render('/vinculacion/hoja-presentacion', [
             'cartas' => $cartas,
         ]);
     }
@@ -81,9 +81,8 @@ class VinculacionController extends Controller
             ])
             ->asArray()
             ->all();
-            var_dump($cartas); exit;
     
-        return $this->renderPartial('/vinculacion/hoja-aceptacion', [
+        return $this->render('/vinculacion/hoja-aceptacion', [
             'cartas' => $cartas,
         ]);
     }
@@ -113,7 +112,7 @@ class VinculacionController extends Controller
             ->all();
             var_dump($cartas); exit;
     
-        return $this->renderPartial('/vinculacion/hoja-termino', [
+        return $this->render('/vinculacion/hoja-termino', [
             'cartas' => $cartas,
         ]);
     }
