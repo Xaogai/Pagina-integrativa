@@ -6,9 +6,8 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
-use yii\web\ForbiddenHttpException;
-use app\models\CartaPresentacion; 
-use app\models\CartaAceptacion; 
+use app\models\CartaPresentacion;
+use app\models\CartaAceptacion;
 use app\models\CartaTermino;
 
 class VinculacionController extends Controller
@@ -27,11 +26,22 @@ class VinculacionController extends Controller
         ]);
     }
 
-    public function actionPresentacion()
+    private function getFilteredCartas($modelClass)
     {
-        $cartas = CartaPresentacion::find()
+        $request = Yii::$app->request;
+
+        // Parámetros de filtrado
+        $nombre = $request->get('nombre');
+        $turno = $request->get('turno');
+        $semestre = $request->get('semestre');
+        $ciclo = $request->get('ciclo');
+        $carrera = $request->get('carrera');
+        $status = $request->get('status');
+
+        // Configurar consulta base
+        $query = $modelClass::find()
             ->select([
-                'carta_presentacion.*',
+                "{$modelClass::tableName()}.*",
                 'alumnos.nombre',
                 'alumnos.apellido_paterno',
                 'alumnos.apellido_materno',
@@ -39,7 +49,7 @@ class VinculacionController extends Controller
                 'carrera.nombre AS carrera',
                 'semestre.nombre AS semestre',
                 'ciclo_escolar.ciclo AS ciclo_escolar',
-                'carta_presentacion.status AS estatus',
+                "{$modelClass::tableName()}.status AS estatus",
             ])
             ->joinWith([
                 'alumno' => function($query) {
@@ -47,11 +57,23 @@ class VinculacionController extends Controller
                 },
                 'semestre',
                 'ciclo'
-            ])
-            ->asArray()
-            ->all();
-            var_dump($cartas); exit;
+            ]);
 
+        // Aplicar filtros
+        $query->andFilterWhere(['like', 'alumnos.nombre', $nombre])
+            ->andFilterWhere(['like', 'turnos.nombre', $turno])
+            ->andFilterWhere(['like', 'semestre.nombre', $semestre])
+            ->andFilterWhere(['like', 'ciclo_escolar.ciclo', $ciclo])
+            ->andFilterWhere(['like', 'carrera.nombre', $carrera])
+            ->andFilterWhere(['like', "{$modelClass::tableName()}.status", $status]);
+
+        return $query->asArray()->all();
+    }
+
+    public function actionPresentacion()
+    {
+        $cartas = $this->getFilteredCartas(CartaPresentacion::class);
+        
         return $this->render('/vinculacion/hoja-presentacion', [
             'cartas' => $cartas,
         ]);
@@ -59,29 +81,8 @@ class VinculacionController extends Controller
 
     public function actionAceptacion()
     {
-        $cartas = CartaAceptacion::find()
-            ->select([
-                'carta_aceptacion.*',
-                'alumnos.nombre',
-                'alumnos.apellido_paterno',
-                'alumnos.apellido_materno',
-                'turnos.nombre AS turno',
-                'carrera.nombre AS carrera',
-                'semestre.nombre AS semestre',
-                'ciclo_escolar.ciclo AS ciclo_escolar',
-                'carta_aceptacion.status AS estatus',
-            ])
-            ->joinWith([
-                'alumno' => function($query) {
-                    $query->joinWith(['carrera', 'turno']);
-                },
-                'alumno.hojaDatos',
-                'semestre',
-                'ciclo'
-            ])
-            ->asArray()
-            ->all();
-    
+        $cartas = $this->getFilteredCartas(CartaAceptacion::class);
+        
         return $this->render('/vinculacion/hoja-aceptacion', [
             'cartas' => $cartas,
         ]);
@@ -89,34 +90,48 @@ class VinculacionController extends Controller
 
     public function actionTerminacion()
     {
-        $cartas = CartaTermino::find()
-            ->select([
-                'carta_termino.*',
-                'alumnos.nombre',
-                'alumnos.apellido_paterno',
-                'alumnos.apellido_materno',
-                'turnos.nombre AS turno',
-                'carrera.nombre AS carrera',
-                'semestre.nombre AS semestre',
-                'ciclo_escolar.ciclo AS ciclo_escolar',
-                'carta_termino.status AS estatus',
-            ])
-            ->joinWith([
-                'alumno' => function($query) {
-                    $query->joinWith(['carrera', 'turno']);
-                },
-                'semestre',
-                'ciclo'
-            ])
-            ->asArray()
-            ->all();
-            var_dump($cartas); exit;
-    
+        $cartas = $this->getFilteredCartas(CartaTermino::class);
+        
         return $this->render('/vinculacion/hoja-termino', [
             'cartas' => $cartas,
         ]);
     }
     
+    public function actionFilter()
+    {
+        $request = Yii::$app->request;
+        $tipo = $request->get('tipo', 'presentacion');
+        
+        // Determinar el modelo base según el tipo
+        switch ($tipo) {
+            case 'aceptacion':
+                $modelClass = CartaAceptacion::class;
+                break;
+            case 'terminacion':
+                $modelClass = CartaTermino::class;
+                break;
+            default:
+                $modelClass = CartaPresentacion::class;
+        }
 
+        $cartas = $this->getFilteredCartas($modelClass);
+
+        if ($request->isAjax) {
+            return $this->renderAjax('tabla', [
+                'cartas' => $cartas,
+                'tipo' => $tipo
+            ]);
+        }
     
+        // Renderizar la vista correspondiente según el tipo
+        $viewMap = [
+            'presentacion' => '/vinculacion/hoja-presentacion',
+            'aceptacion' => '/vinculacion/hoja-aceptacion',
+            'terminacion' => '/vinculacion/hoja-termino'
+        ];
+    
+        return $this->render($viewMap[$tipo], [
+            'cartas' => $cartas,
+        ]);
+    }
 }
