@@ -60,7 +60,7 @@ class CartasVincController extends Controller
     {   
 
         $request = Yii::$app->request;
-        $idUsuario = $request->post('id');  
+        $idUsuario = $request->get('id', $request->post('id'));
 
         if (!$idUsuario) {
             throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
@@ -228,7 +228,7 @@ class CartasVincController extends Controller
 
     
         // Renderiza nueva vista
-        return $this->render('validar-aceptacion', [
+        return $this->render('/validar-aceptacion', [
             'cartas' => $cartas,
             'idUsuario' => $idUsuario
         ]);

@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 
 <h2>Validar Carta de Aceptación</h2>
 
-<iframe src="<?= Url::to(['//carta-aceptacion', 'id' => $idUsuario]) ?>" width="100%" height="600px"></iframe>
+<iframe src="<?= Url::to(['/cartas-vinc/aceptacion', 'id' => $idUsuario]) ?>" width="100%" height="600px"></iframe>
 
 <div style="margin-top:20px;">
     <?= Html::beginForm(['carta/aceptar-aceptacion'], 'post') ?>

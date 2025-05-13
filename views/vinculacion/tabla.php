@@ -149,7 +149,7 @@ $this->registerCssFile('@web/css/tabla.css');
                 // Crear un formulario temporal
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '/cartas-vinc/aceptacion'; // Tu acción existente
+                form.action = '/cartas-vinc/validar-aceptacion'; // Tu acción existente
                 form.target = '_blank'; // Para abrir el PDF en nueva pestaña
 
                 // Agregar campo oculto con el ID
