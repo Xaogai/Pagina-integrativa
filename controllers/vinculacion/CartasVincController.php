@@ -7,6 +7,7 @@ use Mpdf\Mpdf;
 use app\models\CartaPresentacion; 
 use app\models\CartaAceptacion; 
 use app\models\CartaTermino;
+use yii\filters\AccessControl;
 
 class CartasVincController extends Controller
 {   
@@ -283,4 +284,22 @@ class CartasVincController extends Controller
 
         return $mpdf->Output('Hoja-datos.pdf', 'I');
     }
+
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'aceptacion', 'presentacion'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'], // Solo usuarios autenticados
+                    ],
+                ],
+            ],
+        ];
+    }
+
 }
