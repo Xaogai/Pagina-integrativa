@@ -3,7 +3,15 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 
+// Registrar recursos
 $this->registerCssFile('@web/css/formulario_alumno.css');
+$this->registerCssFile('@web/css/mensajes.css');
+$this->registerJsFile('https://kit.fontawesome.com/10b8e36e08.js', ['crossorigin' => 'anonymous']);
+$this->registerJsFile('@web/js/custom-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/js/manipula-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+
+// Incluir el componente de diálogo
+echo $this->render('//components/dialog_box');
 ?>
 
 <div class="alumno-form">
@@ -47,18 +55,17 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
         <?= $form->field($model, 'correo')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'logo')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
-
  
-    <div class="form-group">
+    <div class="buttons-group">
         <?php if ($editable): ?>
-            <?= Html::submitButton('Aceptar', ['class' => 'btn btn-primary', 'name' => 'accion', 'value' => 'aceptar']) ?>
+            <?= Html::button('Aceptar', [
+                'class' => 'btn btn-primary',
+                'id' => 'btn-aceptar-dialog'
+            ]) ?>
         <?php else: ?>
             <?= Html::button('Editar', ['class' => 'btn btn-secondary', 'id' => 'btn-editar']) ?>
-        <?php endif; ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
-    <?php
+        <?php endif;?>
+        <?php
         use app\models\HojaDatos;
 
         // Verifica si hay hoja de datos relacionada
@@ -76,7 +83,7 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
         $botonActivo = $hojaDatos && !$editable;
 
         echo Html::a(
-            '📄 Generar PDF',
+            'Generar PDF',
             ['practicas/datos'],
             [
                 'class' => 'btn btn-primary mt-2' . ($botonActivo ? '' : ' disabled'),
@@ -86,20 +93,10 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
             ]
         );
         ?>
+    </div>
 
+    <?php ActiveForm::end(); ?>
+    
+
+    </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const btnEditar = document.getElementById('btn-editar');
-        const editableInput = document.getElementById('editable-input');
-
-        if (btnEditar) {
-            btnEditar.addEventListener('click', function () {
-                editableInput.value = '1'; // Cambiar el valor oculto
-                document.forms[0].submit(); // Enviar el formulario para habilitar edición
-            });
-        }
-    });
-</script>
-

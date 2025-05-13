@@ -6,8 +6,15 @@ use yii\helpers\ArrayHelper;
 $this->title = 'Carta de Aceptación';
 $this->params['breadcrumbs'][] = $this->title;
 
+// Registrar recursos
 $this->registerCssFile('@web/css/formulario_alumno.css');
-?>
+$this->registerCssFile('@web/css/mensajes.css');
+$this->registerJsFile('https://kit.fontawesome.com/10b8e36e08.js', ['crossorigin' => 'anonymous']);
+$this->registerJsFile('@web/js/custom-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/js/manipula-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+
+// Incluir el componente de diálogo
+echo $this->render('//components/dialog_box');?>
 
 <div class="carta-aceptacion-form">
     <?php if (Yii::$app->session->hasFlash('success')): ?>
@@ -43,43 +50,55 @@ $this->registerCssFile('@web/css/formulario_alumno.css');
     </div>
 
     <div class="form-row">
-        <?= $form->field($model, 'fecha_aceptacion')->input('date', [
+        <?= $form->field($model, 'fecha_inicio_servicio')->input('date', [
             'class' => 'form-input',
             'disabled' => !$editable
         ]) ?>
         
-        <?= $form->field($model, 'fecha_termino')->input('date', [
+        <?= $form->field($model, 'fecha_termino_servicio')->input('date', [
             'class' => 'form-input',
             'disabled' => !$editable
         ]) ?>
     </div>
 
-    <div class="form-group">
+    <div class="buttons-group">
         <?php if ($editable): ?>
-            <?= Html::submitButton('Guardar Carta', [
+            <?= Html::button('Aceptar', [
                 'class' => 'btn btn-primary',
-                'name' => 'accion',
-                'value' => 'aceptar'
+                'id' => 'btn-aceptar-dialog'
             ]) ?>
         <?php else: ?>
-            <?= Html::button('Editar', [
-                'class' => 'btn btn-secondary',
-                'id' => 'btn-editar'
-            ]) ?>
-        <?php endif; ?>
+            <?= Html::button('Editar', ['class' => 'btn btn-secondary', 'id' => 'btn-editar']) ?>
+        <?php endif;?>
+        <?php
+        use app\models\HojaDatos;
+
+        // Verifica si hay hoja de datos relacionada
+        $idAlumno = Yii::$app->user->identity->id_alumno ?? null;
+        $idEmpresa = $model->id_empresa ?? null;
+
+        $hojaDatos = null;
+        if ($idAlumno && $idEmpresa) {
+            $hojaDatos = HojaDatos::find()
+                ->where(['id_alumno' => $idAlumno, 'id_empresa' => $idEmpresa])
+                ->one();
+        }
+
+        // Botón activo solo si hay hoja de datos y no está en modo edición
+        $botonActivo = $hojaDatos && !$editable;
+
+        echo Html::a(
+            'Generar PDF',
+            ['practicas/aceptacion'],
+            [
+                'class' => 'btn btn-primary mt-2' . ($botonActivo ? '' : ' disabled'),
+                'title' => $botonActivo ? 'Generar PDF de Hoja de Datos' : 'Primero guarda la hoja de datos',
+                'aria-disabled' => $botonActivo ? 'false' : 'true',
+                'target' => '_blank'
+            ]
+        );
+        ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const btnEditar = document.getElementById('btn-editar');
-    if (btnEditar) {
-        btnEditar.addEventListener('click', function() {
-            document.getElementById('editable-input').value = '1';
-            document.forms[0].submit();
-        });
-    }
-});
-</script>

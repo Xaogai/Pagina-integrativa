@@ -34,7 +34,7 @@ class Alumnos extends \yii\db\ActiveRecord
             [['sexo'], 'in', 'range' => [self::SEXO_F, self::SEXO_M], 'message' => 'Seleccione un sexo válido.'],
 
             [['correo', 'colonia'], 'string', 'max' => 100, 'tooLong' => 'No puede exceder los 100 caracteres.'],
-            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'string', 'max' => 80, 'tooLong' => 'No puede exceder los 80 caracteres.'],
+            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio', 'otra_institucion'], 'string', 'max' => 80, 'tooLong' => 'No puede exceder los 80 caracteres.'],
             [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'match', 'pattern' => '/^[^\d]+$/', 'message' => 'No debe contener números.'],
 
             [['curp', 'nss', 'calle'], 'string', 'max' => 50, 'tooLong' => 'No puede exceder los 50 caracteres.'],
@@ -78,6 +78,7 @@ class Alumnos extends \yii\db\ActiveRecord
             'nss' => 'NSS',
             'fecha_nacimiento' => 'Fecha de Nacimiento',
             'sexo' => 'Sexo',
+            'otra_institucion' => 'Otra institucion',
             'id_grado' => 'Grado',
             'id_grupo' => 'Grupo',
             'id_carrera' => 'Carrera',

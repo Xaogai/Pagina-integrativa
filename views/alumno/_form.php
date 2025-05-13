@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'apellido_materno')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'curp')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'nss')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'otra_institucion')->dropDownList(['ISSEMYM' => 'ISSEMYM', 'ISSSTE' => 'ISSSTE'], ['prompt' => 'Seleccione una institucion']) ?>
     <?= $form->field($model, 'fecha_nacimiento')->input('date') ?>
     <?= $form->field($model, 'sexo')->dropDownList(['M' => 'Masculino', 'F' => 'Femenino'], ['prompt' => 'Seleccione un género']) ?>
     
