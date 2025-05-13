@@ -184,6 +184,85 @@ class CartasVincController extends Controller
         return $mpdf->Output('carta-termino.pdf', 'I');
     }
 
+    public function actionValidarAceptacion()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->post('id');  
+    
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+    
+        $cartas = CartaAceptacion::find()
+            ->select([
+                'carta_aceptacion.*',
+                'alumnos.id_alumno',
+                'alumnos.nombre AS nombre_alumno',
+                'alumnos.apellido_paterno',
+                'alumnos.apellido_materno',
+                'turnos.nombre AS turno',
+                'carrera.nombre AS carrera',
+                'semestre.nombre AS semestre',
+                'ciclo_escolar.ciclo AS ciclo_escolar',
+                'empresa.nombre AS nombre_empresa',
+                'carta_aceptacion.area AS area_empresa',
+                'carta_aceptacion.fecha_inicio_servicio AS fecha_inicial',
+                'carta_aceptacion.fecha_termino_servicio AS fecha_final',
+                'carta_aceptacion.horario AS horarios',
+                'empresa.jefe_inmediato AS nombre_jefe',
+                'empresa.cargo AS cargo_jefe'
+            ])
+            ->joinWith([
+                'alumno' => function($query) {
+                    $query->joinWith(['carrera', 'turno']);
+                },
+                'alumno.hojaDatos', // Relación con hoja_datos
+                'semestre', 
+                'ciclo'
+            ])
+            ->innerJoin('empresa', 'empresa.id_empresa = hoja_datos.id_empresa')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->asArray()
+            ->all();
+
+    
+        // Renderiza nueva vista
+        return $this->render('validar-aceptacion', [
+            'cartas' => $cartas,
+            'idUsuario' => $idUsuario
+        ]);
+    }
+    
+
+    public function actionAceptarAceptacion()
+    {
+        $id = Yii::$app->request->post('id');
+        $carta = CartaAceptacion::find()->where(['id_usuario' => $id])->one();
+        if ($carta) {
+            $carta->estado = 'ACEPTADO';
+            $carta->save();
+        }
+        return $this->redirect(['documento/index']); // O a donde quieras
+    }
+    
+    public function actionRechazarAceptacion()
+    {
+        $id = Yii::$app->request->post('id');
+        $comentario = Yii::$app->request->post('comentario');
+        
+        $carta = CartaAceptacion::find()->where(['id_usuario' => $id])->one();
+        if ($carta) {
+            $carta->estado = 'RECHAZADO';
+            $carta->comentario_rechazo = $comentario; // si tienes ese campo
+            $carta->save();
+        }
+        return $this->redirect(['documento/index']);
+    }
+
+
+
+
     public function actionDatos()
     {
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
