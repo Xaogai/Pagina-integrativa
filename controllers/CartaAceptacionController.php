@@ -45,12 +45,7 @@ class CartaAceptacionController extends Controller
             $model->id_ciclo = $alumno->id_ciclo;
             $model->status = CartaAceptacion::STATUS_EN_REVISION;
             $model->fecha_emision = date('Y-m-d');
-            $model->fecha_inicio_servicio = date('Y-m-d');
             
-            // Si no se proporcionó fecha_termino_servicio, usar fecha_termino + 1 día
-            if (empty($model->fecha_termino_servicio)) {
-                $model->fecha_termino_servicio = $model->fecha_termino;
-            }
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Carta guardada exitosamente.');

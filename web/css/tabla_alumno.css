@@ -1,0 +1,35 @@
+thead
+{
+    text-align: center;
+    background-color: #d9edf7;
+}
+
+tbody td
+{
+    width: 20%;
+}
+
+tbody td:last-child
+{
+    width: 60%;
+}
+
+tbody td:not(:first-child)
+{
+    text-align: center;
+}
+
+tbody tr
+{
+    cursor: auto;
+}
+
+tbody tr:nth-child(odd):hover
+{
+    background-color: white;
+}
+
+tr:nth-child(even):hover
+{
+    background-color: #fcf8e3;
+}

@@ -2,7 +2,6 @@
 use yii\helpers\Html;
 ?>
 <!DOCTYPE html>
-
 <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -30,78 +29,77 @@ use yii\helpers\Html;
                 <table class="datos-alumno">
                     <tr>
                         <th class="dato">NOMBRE COMPLETO</th>
-                        <th class="nombre-alumno">Dato 2</th>
+                        <th class="nombre-alumno"><?= Html::encode($datos['nombre_completo'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">GRUPO Y TURNO</th>
-                        <th class="grupoTurno-alumno">Dato 2</th>
+                        <th class="grupoTurno-alumno"><?= Html::encode($datos['grupo_turno'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">CARRERA TÉCNICA</th>
-                        <th class="carrera-alumno">Dato 2</th>
+                        <th class="carrera-alumno"><?= Html::encode($datos['carrera'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">CURP</th>
-                        <th class="curp-alumno">Dato 2</th>
+                        <th class="curp-alumno"><?= Html::encode($datos['curp'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">NÚMERO DE SEGURO SOCIAL (IMSS)</th>
-                        <th class="nomImss-alumno">Dato 2</th>
+                        <th class="nomImss-alumno"><?= Html::encode($datos['nss'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">OTRA INSTITUCIÓN DE SALUD</th>
-                        <th class="salud-alumno">Dato 2</th>
                     </tr>
                     <tr>
                         <th class="dato">DOMICILIO</th>
-                        <th class="domicilio-alumno">Dato en formato  (CALLE, NÚMERO, COLONIA, CP. MUNICIPIO)</th>
+                        <th class="domicilio-alumno"><?= Html::encode($datos['domicilio_completo'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">TELÉFONO 1</th>
-                        <th class="telefono1-alumno">Dato</th>
+                        <th class="telefono1-alumno"><?= Html::encode($datos['telefono_alumno_uno'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">TELÉFONO 2</th>
-                        <th class="telefono2-alumno">Dato</th>
+                        <th class="telefono2-alumno"><?= Html::encode($datos['telefono_alumno_dos'] ?? '') ?></th>
                     </tr>
                 </table>
                 <p class="subtitulo">DATOS DEL ESCENARIO REAL (LUGAR DE LAS PRÁCTICAS)</p>
                 <table class="datos-empresa">
                     <tr>
                         <th class="dato">NOMBRE DEL JEFE O RESPONSABLE</th>
-                        <th class="nombre-jefe">Dato 2</th>
+                        <th class="nombre-jefe"><?= Html::encode($datos['jefe_inmediato'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">PERFIL PROFESIONAL DEL JEFE:</th>
-                        <th class="titulo-jefe">Dato 2</th>
+                        <th class="titulo-jefe"><?= Html::encode($datos['perfil_jefe'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">CARGO EN LA EMPRESA O DEPENDENCIA</th>
-                        <th class="cargo-jefe">Dato 2</th>
+                        <th class="cargo-jefe"><?= Html::encode($datos['perfil_jefe'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">NOMBRE DEL LUGAR</th>
-                        <th class="nombre-empresa">Dato 2</th>
+                        <th class="nombre-empresa"><?= Html::encode($datos['nombre_empresa'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">DIRECCIÓN DEL ESCENARIO REAL</th>
-                        <th class="direccion-empresa">Dato en formato CALLE, NÚMERO, COLONIA, CP. MUNICIPIO</th>
+                        <th class="direccion-empresa"><?= Html::encode($datos['direccion_empresa'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">TELÉFONO 1</th>
-                        <th class="telefono1-empresa">Dato</th>
+                        <th class="telefono1-empresa"><?= Html::encode($datos['telefono_empresa1'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">TELÉFONO 2</th>
-                        <th class="teefono2-empresa">Dato</th>
+                        <th class="teefono2-empresa"><?= Html::encode($datos['telefono_empresa2'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">CORREO ELECTRÓNICO</th>
-                        <th class="correo-empresa">Dato 2</th>
+                        <th class="correo-empresa"><?= Html::encode($datos['correo_empresa'] ?? '') ?></th>
                     </tr>
                     <tr>
                         <th class="dato">RFC DEL ESTABLECIMIENTO</th>
-                        <th class="rfc-empresa">Dato 2</th>
+                        <th class="rfc-empresa"><?= Html::encode($datos['rfc_empresa'] ?? '') ?></th>
                     </tr>
                 </table>
             </div>
@@ -110,7 +108,5 @@ use yii\helpers\Html;
                 <p>EN TINTA AZUL</p>
             </div>
         </main>
-        <footer>
-        </footer>
     </body>
 </html>

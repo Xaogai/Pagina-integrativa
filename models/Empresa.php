@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "empresa".
@@ -76,6 +77,11 @@ class Empresa extends \yii\db\ActiveRecord
             [['nombre_lugar'], 'string', 'max' => 150, 'tooLong' => 'Máximo 150 caracteres'],
             [['numero'], 'string', 'max' => 10, 'tooLong' => 'Máximo 10 caracteres'],
             [['codigo_postal', 'telefono_uno', 'telefono_dos'], 'string', 'max' => 15, 'tooLong' => 'Máximo 15 caracteres'],
+        
+            [['rfc'], 'string', 'max' => 13],
+            [['fecha_insercion'], 'safe'],
+            [['rfc'], 'match', 'pattern' => '/^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$/', 
+                'message' => 'RFC no válido'],
         ];
     }
     
@@ -102,6 +108,8 @@ class Empresa extends \yii\db\ActiveRecord
             'telefono_dos' => 'Telefono Dos',
             'correo' => 'Correo',
             'logo' => 'Logo',
+            'rfc' => 'RFC',
+            'fecha_insercion' => 'Fecha de Registro',
         ];
     }
 
@@ -113,6 +121,19 @@ class Empresa extends \yii\db\ActiveRecord
     public function getHojaDatos()
     {
         return $this->hasMany(HojaDatos::class, ['id_empresa' => 'id_empresa']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        
+        if ($insert && empty($this->fecha_insercion)) {
+            $this->fecha_insercion = new Expression('CURDATE()');
+        }
+        
+        return true;
     }
 
 }

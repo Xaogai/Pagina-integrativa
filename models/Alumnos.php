@@ -28,11 +28,13 @@ class Alumnos extends \yii\db\ActiveRecord
 
             [['fecha_nacimiento'], 'date', 'format' => 'php:Y-m-d'],
 
+            [['fecha_insercion', 'fecha_modificacion'], 'safe'],
+
             [['sexo'], 'required', 'message' => 'Seleccione un sexo válido.'],
             [['sexo'], 'in', 'range' => [self::SEXO_F, self::SEXO_M], 'message' => 'Seleccione un sexo válido.'],
 
             [['correo', 'colonia'], 'string', 'max' => 100, 'tooLong' => 'No puede exceder los 100 caracteres.'],
-            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'string', 'max' => 80, 'tooLong' => 'No puede exceder los 80 caracteres.'],
+            [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio', 'otra_institucion'], 'string', 'max' => 80, 'tooLong' => 'No puede exceder los 80 caracteres.'],
             [['nombre', 'apellido_paterno', 'apellido_materno', 'municipio'], 'match', 'pattern' => '/^[^\d]+$/', 'message' => 'No debe contener números.'],
 
             [['curp', 'nss', 'calle'], 'string', 'max' => 50, 'tooLong' => 'No puede exceder los 50 caracteres.'],
@@ -76,6 +78,7 @@ class Alumnos extends \yii\db\ActiveRecord
             'nss' => 'NSS',
             'fecha_nacimiento' => 'Fecha de Nacimiento',
             'sexo' => 'Sexo',
+            'otra_institucion' => 'Otra institucion',
             'id_grado' => 'Grado',
             'id_grupo' => 'Grupo',
             'id_carrera' => 'Carrera',
@@ -107,6 +110,23 @@ class Alumnos extends \yii\db\ActiveRecord
     public function getHojaDatos()
     {
         return $this->hasOne(HojaDatos::className(), ['id_alumno' => 'id_alumno']);
+    }
+    
+    public function getGrupo()
+    {
+        return $this->hasOne(Grupos::className(), ['id_grupo' => 'id_grupo']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->fecha_insercion = date('Y-m-d H:i:s'); // Solo la primera vez
+            }
+            $this->fecha_modificacion = date('Y-m-d H:i:s'); // Siempre que se guarde
+            return true;
+        }
+        return false;
     }
 
 }

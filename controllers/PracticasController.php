@@ -7,6 +7,7 @@ use Mpdf\Mpdf;
 use app\models\CartaPresentacion; 
 use app\models\CartaAceptacion; 
 use app\models\CartaTermino;
+use app\models\HojaDatos;
 
 class PracticasController extends Controller
 {   
@@ -176,22 +177,85 @@ class PracticasController extends Controller
 
     public function actionDatos()
     {
+        $idUsuario = Yii::$app->session->get('user_id');
+    
+        $datos = HojaDatos::find()
+            ->select([
+                'alumnos.nombre AS nombre_alumno',
+                'alumnos.apellido_paterno',
+                'alumnos.apellido_materno',
+                'alumnos.curp',
+                'alumnos.nss',
+                'alumnos.calle',
+                'alumnos.numero',
+                'alumnos.colonia',
+                'alumnos.codigo_postal',
+                'alumnos.telefono_uno AS telefono_alumno_uno',
+                'alumnos.telefono_dos AS telefono_alumno_dos',
+                'carrera.nombre AS carrera',
+                'semestre.nombre AS semestre',
+                'turnos.nombre AS turno',
+                'empresa.nombre AS nombre_empresa',
+                'empresa.jefe_inmediato',
+                'empresa.cargo AS perfil_jefe',
+                'empresa.calle AS calle_empresa',
+                'empresa.colonia AS colonia_empresa',
+                'empresa.numero AS numero_empresa',
+                'empresa.codigo_postal AS cp_empresa',
+                'empresa.municipio AS municipio_empresa',
+                'empresa.telefono_uno AS telefono_empresa1',
+                'empresa.telefono_dos AS telefono_empresa2',
+                'empresa.correo AS correo_empresa',
+                'empresa.rfc AS rfc_empresa'
+            ])
+            ->joinWith(['alumno', 'alumno.carrera', 'semestre', 'alumno.turno'])
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->innerJoin('empresa', 'empresa.id_empresa = hoja_datos.id_empresa')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->asArray()
+            ->one();
+
+        #var_dump($datos); exit;
+            
+        // Datos combinados
+        $datos['nombre_completo'] = $datos['nombre_alumno'] . ' ' . $datos['apellido_paterno'] . ' ' . $datos['apellido_materno'];
+        $datos['grupo_turno'] = $datos['semestre'] . ' - ' . $datos['turno'];
+
+        // Domicilio
+        $datos['domicilio_completo'] = implode(', ', array_filter([
+            $datos['calle'],
+            $datos['numero'],
+            $datos['colonia'],
+            'CP. ' . $datos['codigo_postal'],
+            $datos['municipio'] ?? ''
+        ]));
+
+        // Empresa
+        $datos['direccion_empresa'] = implode(', ', array_filter([
+            $datos['calle_empresa'],
+            $datos['numero_empresa'],
+            $datos['colonia_empresa'],
+            'CP. ' . $datos['cp_empresa'],
+            $datos['municipio_empresa']
+        ]));
+    
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
         $styleCssFile = Yii::getAlias('@webroot/css/style-datos.css');
-
+    
         $resetCss = file_get_contents($resetCssFile);
         $styleCss = file_get_contents($styleCssFile);
-
+    
         $css = $resetCss . "\n" . $styleCss;
-
-        $html = $this->renderPartial('//carta-datos');
-
+    
+        $html = $this->renderPartial('//carta-datos', [
+            'datos' => $datos, 
+        ]);
+    
         $mpdf = new Mpdf();
-
+    
         $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
-
         $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
-
-        return $mpdf->Output('Hoja-datos.pdf', 'I');
+    
+        return $mpdf->Output('carta-datos.pdf', 'I');
     }
 }

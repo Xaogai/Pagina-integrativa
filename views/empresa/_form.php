@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
+use app\models\HojaDatos;
 
 ?>
 
@@ -24,12 +24,37 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'correo')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'rfc')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'logo')->textInput(['maxlength' => true]) ?>
-    
 
-    
     <div class="form-group">
         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php
+    // Verifica si hay hoja de datos relacionada
+    $idAlumno = Yii::$app->user->identity->id_alumno ?? null;
+    $idEmpresa = $model->id_empresa ?? null;
+
+    $hojaDatos = null;
+    if ($idAlumno && $idEmpresa) {
+        $hojaDatos = HojaDatos::find()
+            ->where(['id_alumno' => $idAlumno, 'id_empresa' => $idEmpresa])
+            ->one();
+    }
+
+    // Botón activo solo si hay hoja de datos y no es nuevo registro
+    $botonActivo = $hojaDatos && !$model->isNewRecord;
+
+    echo Html::a(
+        '📄 Generar PDF',
+        ['practicas/datos'],
+        [
+            'class' => 'btn btn-primary mt-2' . ($botonActivo ? '' : ' disabled'),
+            'title' => $botonActivo ? 'Generar PDF de Hoja de Datos' : 'Primero debes guardar la hoja de datos',
+            'aria-disabled' => $botonActivo ? 'false' : 'true',
+            'target' => '_blank' // <- Esto abre el enlace en una nueva pestaña
+        ]
+    );    
+    ?>
 </div>

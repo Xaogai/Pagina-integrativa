@@ -48,10 +48,11 @@ class CartaAceptacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['horario', 'area', 'fecha_aceptacion', 'fecha_termino'], 'required'],
+            [['horario', 'area'], 'required'],
             [['id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
             [['status'], 'string'],
-            [['fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'date', 'format' => 'php:Y-m-d'],
+            [['fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_emision'], 'date', 'format' => 'php:Y-m-d'],
+            [['fecha_emision', 'fecha_aceptacion'], 'safe'],
             [['area'], 'string', 'max' => 100],
             [['horario'], 'string', 'max' => 200],
             ['status', 'default', 'value' => self::STATUS_EN_REVISION],
@@ -62,18 +63,9 @@ class CartaAceptacion extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            // Asignar fechas automáticas si no están seteadas
-            if ($this->isNewRecord) {
-                $this->fecha_emision = date('Y-m-d');
-                $this->fecha_inicio_servicio = date('Y-m-d');
-                $this->status = self::STATUS_EN_REVISION;
+            if ($insert) {
+                $this->fecha_insercion = date('Y-m-d H:i:s'); // Solo la primera vez
             }
-            
-            // Asegurar que fecha_termino_servicio tenga valor
-            if (empty($this->fecha_termino_servicio)) {
-                $this->fecha_termino_servicio = $this->fecha_termino;
-            }
-            
             return true;
         }
         return false;
