@@ -95,3 +95,32 @@ echo $this->render('//components/dialog_box');
 
     <?php ActiveForm::end(); ?>
 </div>
+
+<?php
+$script = <<< JS
+$(document).ready(function() {
+    var isEditable = $('#editable-input').val() === '1';
+
+    if (isEditable) {
+        function toggleInstituciones() {
+            let nss = $('#alumnos-nss').val().trim();
+            let otra = $('#alumnos-otra_institucion').val();
+
+            if (nss !== '') {
+                $('#alumnos-otra_institucion').prop('disabled', true).val('');
+            } else if (otra !== '') {
+                $('#alumnos-nss').prop('disabled', true).val('');
+            } else {
+                $('#alumnos-nss').prop('disabled', false);
+                $('#alumnos-otra_institucion').prop('disabled', false);
+            }
+        }
+
+        $('#alumnos-nss, #alumnos-otra_institucion').on('input change', toggleInstituciones);
+        toggleInstituciones(); // ejecutar al cargar
+    }
+});
+JS;
+
+$this->registerJs($script);
+?>

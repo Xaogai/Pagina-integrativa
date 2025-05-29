@@ -4,6 +4,44 @@ use yii\helpers\Url;
 
 $this->beginPage();
 ?>
+
+<?php
+use app\models\Alumnos;
+use app\models\HojaDatos;
+use app\models\CartaAceptacion;
+use app\models\CartaPresentacion;
+
+$idUsuario = Yii::$app->session->get('user_id');
+
+// Buscar al alumno
+$alumno = Alumnos::find()->where(['id_usuario' => $idUsuario])->one();
+$alumnoExiste = $alumno !== null;
+
+// Verificar si tiene una hoja de datos aceptada
+$hojaDatosAceptada = false;
+if ($alumnoExiste) {
+    $hojaDatosAceptada = HojaDatos::find()
+        ->where(['id_alumno' => $alumno->id_alumno, 'status' => HojaDatos::STATUS_ACEPTADO])
+        ->exists();
+}
+
+$cartaAceptacionAceptada = false;
+if ($alumnoExiste) {
+    $cartaAceptacionAceptada = CartaAceptacion::find()
+        ->where(['id_alumno' => $alumno->id_alumno, 'status' => CartaAceptacion::STATUS_ACEPTADO])
+        ->exists();
+}
+
+$cartaPresentacionAceptada = false;
+
+if ($alumnoExiste) {
+    $cartaPresentacionAceptada = CartaPresentacion::find()
+        ->where(['id_alumno' => $alumno->id_alumno,'status' => CartaPresentacion::STATUS_ACEPTADO])
+        ->exists();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,12 +63,28 @@ $this->beginPage();
             <li><a href="<?= Url::to(['/alumno']) ?>">Inicio</a></li>
             <li><a href="<?= Url::to(['/alumno/alumno/datos-generales']) ?>">Datos del alumno</a></li>
             <li class="dropdown">
-                <a href="#" class="dropbtn">Prácticas</a>
+                <a href="#" class="dropbtn disabled">Prácticas</a>
                 <ul class="submenu">
-                    <li><a href="<?= Url::to(['empresa/datos-empresa']) ?>">Hoja de Datos</a></li>
-                    <!-- <li><a href="<?= Url::to(['practicas/presentacion']) ?>">Carta de Presentación</a></li> -->
-                    <li><a href="<?= Url::to(['cartaaceptacion/datos-carta-aceptacion']) ?>">Carta de Aceptación</a></li>
-                    <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Carta de Término</a></li>
+                    <?php if ($alumnoExiste): ?>
+                        <li><a href="<?= Url::to(['empresa/datos-empresa']) ?>">Hoja de Datos</a></li>
+                    <?php else: ?>
+                        <li><a class="disabled-link">Hoja de Datos</a></li>
+                    <?php endif; ?>
+                    <?php if ($hojaDatosAceptada): ?>
+                        <li><a href="<?= Url::to(['cartaaceptacion/datos-carta-aceptacion']) ?>">Carta de Aceptación</a></li>
+                    <?php else: ?>
+                        <li><a class="disabled-link">Carta de Aceptación</a></li>
+                    <?php endif; ?>
+                    <?php if ($cartaAceptacionAceptada): ?>
+                        <li><a href="<?= Url::to(['practicas/presentacion']) ?>">Carta de Presentación</a></li>
+                    <?php else: ?>
+                        <li><a class="disabled-link">Carta de Presentación</a></li>
+                    <?php endif; ?>
+                    <?php if ($cartaPresentacionAceptada): ?>
+                        <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Carta de Término</a></li>
+                    <?php else: ?>
+                        <li><a class="disabled-link">Carta de Término</a></li>
+                    <?php endif; ?>
                 </ul>
             </li>
             

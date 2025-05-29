@@ -56,9 +56,24 @@ body {
     transition: all 0.2s ease;
 }
 
+.navbar ul li a.disabled-link{
+    color: white;
+    cursor: default;
+}
+
 .navbar ul li a:hover {
     color: #c8c8c8;
 }
+
+.navbar ul li a.disabled:hover {
+    color: white;
+}
+
+.navbar ul li a.disabled-link:hover{
+    color: white;
+    cursor: default;
+}
+
 
 /*COLLAPSE*/
 
@@ -223,5 +238,5 @@ footer {
         background-color: rgba(255,255,255,0.1); 
         padding-left: 15px;
         transition: all 0.3s ease; 
-    }
+    }  
 }

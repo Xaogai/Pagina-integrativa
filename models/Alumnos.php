@@ -22,7 +22,7 @@ class Alumnos extends \yii\db\ActiveRecord
         return [
             [['sexo', 'telefono_uno', 'telefono_dos', 'calle', 'numero', 'colonia', 'codigo_postal', 'municipio'], 'default', 'value' => null],
 
-            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required', 'message' => 'Este campo es obligatorio.'],
+            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required', 'message' => 'Este campo es obligatorio.'],
 
             [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'integer', 'message' => 'Debe ser un número entero.'],
 
