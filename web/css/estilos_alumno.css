@@ -193,6 +193,10 @@ footer {
         display: none;
     }
 
+    .navbar.collapsed h2 {
+        display: block;
+    }
+
     .navbar.collapsed ul {
         list-style: none;
         padding: 0;

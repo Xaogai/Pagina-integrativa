@@ -14,6 +14,11 @@ $this->registerJsFile('@web/js/manipula-dialog.js', ['depends' => [\yii\web\Jque
 echo $this->render('//components/dialog_box');
 ?>
 
+<div class="titulo">
+    <h1>Datos de la empresa</h1>
+    <p>Ingresa los datos de tu empresa<br></p><br>
+</div>
+
 <div class="alumno-form">
     <?php if (Yii::$app->session->hasFlash('success')): ?>
         <div class="alert alert-success">
