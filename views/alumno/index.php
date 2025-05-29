@@ -22,28 +22,66 @@ $this->registerCssFile('@web/css/tabla_alumno.css');
                 </tr>
             </thead>
             <tbody>
+                <!-- Hoja de Datos -->
                 <tr class="datos">
                     <td>Hoja de datos</td>
-                    <td>a</td>
-                    <td>a</td>
+                    <td>
+                        <?= $hoja_datos ? Html::encode($hoja_datos->status) : 'No aplica' ?>
+                    </td>
+                    <td>
+                        <?= $hoja_datos ? 
+                            ($hoja_datos->comentario_vinculacion ? 
+                                Html::encode($hoja_datos->comentario_vinculacion) : 
+                                'No hay comentarios') : 
+                            'No aplica' ?>
+                    </td>
                 </tr>
+                
+                <!-- Carta de Presentación -->
                 <tr class="datos">
-                    <td>Presentacion</td>
-                    <td>a</td>
-                    <td>a</td>
+                    <td>Presentación</td>
+                    <td>
+                        <?= $carta_presentacion ? Html::encode($carta_presentacion->status) : 'No aplica' ?>
+                    </td>
+                    <td>
+                        <?= $carta_presentacion ? 
+                            ($carta_presentacion->comentario_vinculacion ? 
+                                Html::encode($carta_presentacion->comentario_vinculacion) : 
+                                'No hay comentarios') : 
+                            'No aplica' ?>
+                    </td>
                 </tr>
+                
+                <!-- Carta de Aceptación -->
                 <tr class="datos">
-                    <td>Aceptacion</td>
-                    <td>a</td>
-                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit nunc, gravida sit amet imperdiet in, dapibus nec metus. Nullam lacinia velit urna, sit amet lacinia est malesuada nec. Aenean rhoncus finibus luctus. Vivamus vehicula ut nunc a iaculis. Nunc ut hendrerit justo, vitae tristique tortor.</td>
+                    <td>Aceptación</td>
+                    <td>
+                        <?= $carta_aceptacion ? Html::encode($carta_aceptacion->status) : 'No aplica' ?>
+                    </td>
+                    <td>
+                        <?= $carta_aceptacion ? 
+                            ($carta_aceptacion->comentario_vinculacion ? 
+                                Html::encode($carta_aceptacion->comentario_vinculacion) : 
+                                'No hay comentarios') : 
+                            'No aplica' ?>
+                    </td>
                 </tr>
+                
+                <!-- Carta de Término -->
                 <tr class="datos">
-                    <td>Termino</td>
-                    <td>a</td>
-                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit nunc, gravida sit amet imperdiet in, dapibus nec metus. Nullam lacinia velit urna, sit amet lacinia est malesuada nec. Aenean rhoncus finibus luctus. Vivamus vehicula ut nunc a iaculis. Nunc ut hendrerit justo, vitae tristique tortor. Cras id sapien velit. Nunc sed tortor condimentum, pretium dolor quis, pharetra magna. Morbi sit amet egestas est. Suspendisse mattis malesuada vehicula. Etiam tempus pulvinar justo quis molestie. Nunc facilisis elit vitae arcu consequat tristique. Nunc interdum dui sed arcu tristique rhoncus. Suspendisse dapibus mauris augue, sit amet scelerisque purus aliquet vel. Morbi fermentum eros et euismod ultricies.</td>
+                    <td>Término</td>
+                    <td>
+                        <?= $carta_termino ? Html::encode($carta_termino->status) : 'No aplica' ?>
+                    </td>
+                    <td>
+                        <?= $carta_termino ? 
+                            ($carta_termino->comentario_vinculacion ? 
+                                Html::encode($carta_termino->comentario_vinculacion) : 
+                                'No hay comentarios') : 
+                            'No aplica' ?>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </main>
 </body>
-

@@ -11,6 +11,10 @@ use app\models\Grupos;
 use app\models\Carrera;
 use app\models\Turnos;
 use app\models\CicloEscolar;
+use app\models\HojaDatos;
+use app\models\CartaPresentacion;
+use app\models\CartaAceptacion;
+use app\models\CartaTermino;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
@@ -22,10 +26,23 @@ class AlumnoController extends Controller
 {
     public $layout = 'main_alumno';
 
-    public function actionIndex()
-    {
-        return $this->render('/alumno/index');
-    }
+    public function actionIndex() {
+    // Obtener el ID del alumno (ejemplo: desde la sesión o autenticación)
+    $id_alumno = Yii::$app->session->get('user_id'); // Ajusta según tu sistema
+    
+    // Consultar cada tipo de documento
+    $hoja_datos = HojaDatos::find()->where(['id_alumno' => $id_alumno])->one();
+    $carta_presentacion = CartaPresentacion::find()->where(['id_alumno' => $id_alumno])->one();
+    $carta_aceptacion = CartaAceptacion::find()->where(['id_alumno' => $id_alumno])->one();
+    $carta_termino = CartaTermino::find()->where(['id_alumno' => $id_alumno])->one();
+    
+    return $this->render('/alumno/index', [
+        'hoja_datos' => $hoja_datos,
+        'carta_presentacion' => $carta_presentacion,
+        'carta_aceptacion' => $carta_aceptacion,
+        'carta_termino' => $carta_termino,
+    ]);
+}
 
     public function actionDatosGenerales()
     {
