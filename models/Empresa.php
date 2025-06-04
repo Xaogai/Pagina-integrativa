@@ -41,10 +41,11 @@ class Empresa extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+
     public function rules()
     {
         return [
-            [['logo'], 'default', 'value' => null],
+            ['logo', 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024],
     
             // Campos obligatorios
             [['nombre', 'jefe_inmediato', 'perfil_profesional', 'cargo', 'nombre_lugar', 'calle', 'colonia', 'numero', 'codigo_postal', 'municipio', 'telefono_uno', 'telefono_dos', 'correo'], 'required', 'message' => 'Este campo es obligatorio'],
@@ -72,7 +73,7 @@ class Empresa extends \yii\db\ActiveRecord
             [['correo'], 'email', 'message' => 'Ingrese un correo electrónico válido'],
     
             // Longitudes máximas
-            [['nombre', 'jefe_inmediato', 'perfil_profesional', 'calle', 'colonia', 'correo', 'logo'], 'string', 'max' => 100, 'tooLong' => 'Máximo 100 caracteres'],
+            [['nombre', 'jefe_inmediato', 'perfil_profesional', 'calle', 'colonia', 'correo'], 'string', 'max' => 100, 'tooLong' => 'Máximo 100 caracteres'],
             [['cargo', 'municipio'], 'string', 'max' => 80, 'tooLong' => 'Máximo 80 caracteres'],
             [['nombre_lugar'], 'string', 'max' => 150, 'tooLong' => 'Máximo 150 caracteres'],
             [['numero'], 'string', 'max' => 10, 'tooLong' => 'Máximo 10 caracteres'],

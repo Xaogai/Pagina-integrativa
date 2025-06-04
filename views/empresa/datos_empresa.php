@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
 
 // Registrar recursos
 $this->registerCssFile('@web/css/formulario_alumno.css');
@@ -26,7 +27,7 @@ echo $this->render('//components/dialog_box');
         </div>
     <?php endif; ?>
 
-    <?php $form = ActiveForm::begin(['options' => ['class' => 'form-container']]); ?>
+    <?php $form = ActiveForm::begin(['options' => ['class' => 'form-container',  'enctype' => 'multipart/form-data']]); ?>
 
     <!-- Campo oculto para determinar si estamos en modo edición -->
     <?= Html::hiddenInput('editable', $editable ? '1' : '0', ['id' => 'editable-input']) ?>
@@ -58,7 +59,7 @@ echo $this->render('//components/dialog_box');
     <div class="form-row">
         <?= $form->field($model, 'rfc')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
         <?= $form->field($model, 'correo')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
-        <?= $form->field($model, 'logo')->textInput(['maxlength' => true, 'class' => 'form-input', 'disabled' => !$editable]) ?>
+        <?= $form->field($model, 'logo')->fileInput(['class' => 'form-input', 'disabled' => !$editable]) ?>
     </div>
  
     <div class="buttons-group">
