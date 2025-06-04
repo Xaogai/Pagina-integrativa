@@ -86,11 +86,11 @@ class SiteController extends Controller
         // 🔥 **GUARDA EL ID DEL USUARIO EN LA SESIÓN** 🔥
         Yii::$app->session->set('user_id', $usuario->id);
     
-        // Verificamos el tipo de usuario y redirigimos
-        if ($usuario->tipo_usuario == 'ESTUDIANTE') {
+        // En onAuthSuccess()
+        if (in_array($usuario->tipo_usuario, ['SUPERVINCULACION', 'VINCULACION', 'MINIVINCULACION'])) {
+            return $this->redirect(['/vinculacion']); // Misma vista para todos
+        } elseif ($usuario->tipo_usuario == 'ESTUDIANTE') {
             return $this->redirect(['/alumno']);
-        } elseif ($usuario->tipo_usuario == 'VINCULACION') {
-            return $this->redirect(['/vinculacion']);
         }
     
         // Si el tipo de usuario no es reconocido, lo deslogueamos
@@ -105,10 +105,11 @@ class SiteController extends Controller
             $usuario = Yii::$app->user->identity;
 
             // Verificar el tipo de usuario y redirigir según corresponda
-            if ($usuario->tipo_usuario == 'ESTUDIANTE') {
-                return $this->redirect(['/alumno']); // Redirige a la vista de alumno
-            } elseif ($usuario->tipo_usuario == 'VINCULACION') {
-                return $this->redirect(['/vinculacion']); // Redirige a la vista de vinculación
+            // En onAuthSuccess()
+            if (in_array($usuario->tipo_usuario, ['SUPERVINCULACION', 'VINCULACION', 'MINIVINCULACION'])) {
+                return $this->redirect(['/vinculacion']); // Misma vista para todos
+            } elseif ($usuario->tipo_usuario == 'ESTUDIANTE') {
+                return $this->redirect(['/alumno']);
             }
 
             // Si el usuario no es de tipo "alumno" ni "vinculacion", redirigirlo al login
@@ -123,12 +124,12 @@ class SiteController extends Controller
             $usuario = Yii::$app->user->identity;
 
             // Verificar el tipo de usuario
-            if ($usuario->tipo_usuario == 'alumno') {
+            // En onAuthSuccess()
+            if (in_array($usuario->tipo_usuario, ['SUPERVINCULACION', 'VINCULACION', 'MINIVINCULACION'])) {
+                return $this->redirect(['/vinculacion']); // Misma vista para todos
+            } elseif ($usuario->tipo_usuario == 'ESTUDIANTE') {
                 return $this->redirect(['/alumno']);
-            } elseif ($usuario->tipo_usuario == 'vinculacion') {
-                return $this->redirect(['/vinculacion']);
             }
-
             // Si el tipo de usuario no es reconocido, desloguear y redirigir a login
             Yii::$app->user->logout();
             return $this->redirect(['site/login']);
