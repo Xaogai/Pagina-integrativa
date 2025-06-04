@@ -12,7 +12,7 @@ $this->registerJsFile('@web/js/manipula-dialog.js', ['depends' => [\yii\web\Jque
 
 
 // Incluir el componente de diálogo
-echo $this->render('//components/dialog_box');
+echo $this->render('@app/components/dialog_box');
 ?>
 
 <div class="titulo">
