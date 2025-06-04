@@ -87,58 +87,66 @@ class SiteController extends Controller
         Yii::$app->session->set('user_id', $usuario->id);
     
         // En onAuthSuccess()
-        if (in_array($usuario->tipo_usuario, ['SUPERVINCULACION', 'VINCULACION', 'MINIVINCULACION'])) {
-            return $this->redirect(['/vinculacion']); // Misma vista para todos
-        } elseif ($usuario->tipo_usuario == 'ESTUDIANTE') {
-            return $this->redirect(['/alumno']);
+
+        if (!Yii::$app->user->isGuest) {
+            $usuario = Yii::$app->user->identity;
+            
+            switch ($usuario->getRol()) {
+                case 'SUPERVINCULACION':
+                case 'VINCULACION':
+                case 'MINIVINCULACION':
+                    return $this->redirect(['/vinculacion']);
+                case 'ESTUDIANTE':
+                    return $this->redirect(['/alumno']);
+                default:
+                    Yii::$app->user->logout();
+                    Yii::$app->session->setFlash('error', 'Rol no reconocido');
+                    return $this->redirect(['site/login']);
+            }
         }
-    
-        // Si el tipo de usuario no es reconocido, lo deslogueamos
-        Yii::$app->user->logout();
+        
+        Yii::$app->session->setFlash('error', 'Error en autenticación');
         return $this->redirect(['site/login']);
     }
     
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            // Obtener el usuario autenticado
-            $usuario = Yii::$app->user->identity;
-
-            // Verificar el tipo de usuario y redirigir según corresponda
-            // En onAuthSuccess()
-            if (in_array($usuario->tipo_usuario, ['SUPERVINCULACION', 'VINCULACION', 'MINIVINCULACION'])) {
-                return $this->redirect(['/vinculacion']); // Misma vista para todos
-            } elseif ($usuario->tipo_usuario == 'ESTUDIANTE') {
-                return $this->redirect(['/alumno']);
-            }
-
-            // Si el usuario no es de tipo "alumno" ni "vinculacion", redirigirlo al login
-            Yii::$app->user->logout();
-            return $this->redirect(['site/login']);
+            return $this->redirigirPorRol();
         }
-
+    
         $model = new LoginForm();
-
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            // Obtener el usuario autenticado
-            $usuario = Yii::$app->user->identity;
-
-            // Verificar el tipo de usuario
-            // En onAuthSuccess()
-            if (in_array($usuario->tipo_usuario, ['SUPERVINCULACION', 'VINCULACION', 'MINIVINCULACION'])) {
-                return $this->redirect(['/vinculacion']); // Misma vista para todos
-            } elseif ($usuario->tipo_usuario == 'ESTUDIANTE') {
-                return $this->redirect(['/alumno']);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->login()) {
+                return $this->redirigirPorRol();
             }
-            // Si el tipo de usuario no es reconocido, desloguear y redirigir a login
-            Yii::$app->user->logout();
-            return $this->redirect(['site/login']);
+            Yii::$app->session->setFlash('error', 'Credenciales incorrectas');
         }
-
+    
         return $this->render('login', ['model' => $model]);
     }
 
+    private function redirigirPorRol()
+    {
+        $usuario = Yii::$app->user->identity;
+        if (!$usuario) {
+            Yii::$app->user->logout();
+            return $this->redirect(['site/login']);
+        }
 
+        switch ($usuario->getRol()) {
+            case 'SUPERVINCULACION':
+            case 'VINCULACION':
+            case 'MINIVINCULACION':
+                return $this->redirect(['/vinculacion']);
+            case 'ESTUDIANTE':
+                return $this->redirect(['/alumno']);
+            default:
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', 'Rol no válido');
+                return $this->redirect(['site/login']);
+        }
+    }
 
     public function actionLogout()
     {
