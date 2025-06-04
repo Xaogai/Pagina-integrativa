@@ -53,7 +53,7 @@ class HojaDatos extends \yii\db\ActiveRecord
             [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'required'],
             [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'integer'],
             [['status'], 'string'],
-            [['fecha_emision', 'fecha_aceptacion', 'fecha_termino','fecha_insercion'], 'safe'],
+            [['fecha_emision', 'fecha_aceptacion', 'fecha_termino','fecha_insercion', 'comentario_vinculacion'], 'safe'],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
             [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
             [['id_empresa'], 'exist', 'skipOnError' => true, 'targetClass' => Empresa::class, 'targetAttribute' => ['id_empresa' => 'id_empresa']],
