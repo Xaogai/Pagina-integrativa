@@ -96,6 +96,11 @@ class VinculacionController extends Controller
             'cartas' => $cartas,
         ]);
     }
+
+    public function actionPermisos()
+    {
+        return $this->render('/vinculacion/permisos');
+    }
     
     public function actionFilter()
     {
