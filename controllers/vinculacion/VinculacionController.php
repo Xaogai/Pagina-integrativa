@@ -79,6 +79,15 @@ class VinculacionController extends Controller
         ]);
     }
 
+    public function actionDatos()
+    {
+        $cartas = $this->getFilteredCartas(CartaPresentacion::class);
+        
+        return $this->render('/vinculacion/hoja-datos', [
+            'cartas' => $cartas,
+        ]);
+    }
+
     public function actionAceptacion()
     {
         $cartas = $this->getFilteredCartas(CartaAceptacion::class);
