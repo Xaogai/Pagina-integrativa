@@ -22,7 +22,7 @@ class Alumnos extends \yii\db\ActiveRecord
         return [
             [['sexo', 'telefono_uno', 'telefono_dos', 'calle', 'numero', 'colonia', 'codigo_postal', 'municipio'], 'default', 'value' => null],
 
-            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required', 'message' => 'Este campo es obligatorio.'],
+            [['correo', 'curp', 'nombre', 'apellido_paterno', 'apellido_materno', 'id_semestreactual', 'id_institucion', 'nss', 'fecha_nacimiento', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'required', 'message' => 'Este campo es obligatorio.'],
 
             [['id_semestreactual', 'id_institucion', 'id_grado', 'id_grupo', 'id_carrera', 'id_turno', 'id_usuario', 'id_ciclo'], 'integer', 'message' => 'Debe ser un número entero.'],
 
@@ -109,8 +109,24 @@ class Alumnos extends \yii\db\ActiveRecord
     // En models/Alumnos.php
     public function getHojaDatos()
     {
-        return $this->hasOne(HojaDatos::className(), ['id_alumno' => 'id_alumno']);
+        return $this->hasOne(HojaDatos::class, ['id_alumno' => 'id_alumno']);
     }
+
+    public function getCartaPresentacion()
+    {
+        return $this->hasOne(CartaPresentacion::class, ['id_alumno' => 'id_alumno']);
+    }
+
+    public function getCartaAceptacion()
+    {
+        return $this->hasOne(CartaAceptacion::class, ['id_alumno' => 'id_alumno']);
+    }
+
+    public function getCartaTermino()
+    {
+        return $this->hasOne(CartaTermino::class, ['id_alumno' => 'id_alumno']);
+    }
+
     
     public function getGrupo()
     {
@@ -124,6 +140,16 @@ class Alumnos extends \yii\db\ActiveRecord
                 $this->fecha_insercion = date('Y-m-d H:i:s'); // Solo la primera vez
             }
             $this->fecha_modificacion = date('Y-m-d H:i:s'); // Siempre que se guarde
+            
+            // Si se está actualizando el nss, limpiar otra_institucion
+            if ($this->isAttributeChanged('nss') && !empty($this->nss)) {
+                $this->otra_institucion = null;
+            }
+            
+            // Si se está actualizando otra_institucion, limpiar nss
+            if ($this->isAttributeChanged('otra_institucion') && !empty($this->otra_institucion)) {
+                $this->nss = null;
+            }
             return true;
         }
         return false;
