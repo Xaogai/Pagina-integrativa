@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\Usuarios;
+use app\components\Permisos;
 
 class SuperVincController extends Controller
 {

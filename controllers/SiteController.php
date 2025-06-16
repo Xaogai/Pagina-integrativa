@@ -65,14 +65,20 @@ class SiteController extends Controller
         
         $email = $attributes['email'];
         $googleId = $attributes['id'];
-    
+
         $usuario = Usuarios::findOne(['correo' => $email]);
-    
+
         if (!$usuario) {
             Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
             return $this->redirect(['site/login']);
         }
-    
+
+        // Verifica que el usuario tenga un tipo_usuario válido
+        if (empty($usuario->tipo_usuario)) {
+            Yii::$app->session->setFlash('error', 'El usuario no tiene un rol asignado.');
+            return $this->redirect(['site/login']);
+        }
+
         if (empty($usuario->token)) {
             $usuario->token = $googleId;
             if (!$usuario->save()) {
@@ -80,31 +86,16 @@ class SiteController extends Controller
                 return $this->redirect(['site/login']);
             }
         }
-    
-        // Inicia sesión
-        Yii::$app->user->login($usuario);
-        // 🔥 **GUARDA EL ID DEL USUARIO EN LA SESIÓN** 🔥
-        Yii::$app->session->set('user_id', $usuario->id);
-    
-        // En onAuthSuccess()
 
-        if (!Yii::$app->user->isGuest) {
-            $usuario = Yii::$app->user->identity;
+        // Inicia sesión
+        if (Yii::$app->user->login($usuario)) {
+            // Guarda todos los datos relevantes en la sesión
+            Yii::$app->session->set('user_id', $usuario->id);
+            Yii::$app->session->set('user_role', $usuario->tipo_usuario);
             
-            switch ($usuario->getRol()) {
-                case 'SUPERVINCULACION':
-                case 'VINCULACION':
-                case 'MINIVINCULACION':
-                    return $this->redirect(['/vinculacion']);
-                case 'ESTUDIANTE':
-                    return $this->redirect(['/alumno']);
-                default:
-                    Yii::$app->user->logout();
-                    Yii::$app->session->setFlash('error', 'Rol no reconocido');
-                    return $this->redirect(['site/login']);
-            }
+            return $this->redirigirPorRol();
         }
-        
+
         Yii::$app->session->setFlash('error', 'Error en autenticación');
         return $this->redirect(['site/login']);
     }
