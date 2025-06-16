@@ -2,12 +2,14 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use app\components\Permisos;
 ?>
 
 <h2>Validar Carta de Aceptación</h2>
 
 <iframe src="<?= Url::to(['/cartas-vinc/aceptacion', 'id' => $idUsuario]) ?>" width="100%" height="600px"></iframe>
 <div style="margin-top:20px;">
+    <?php var_dump(Permisos::puedeEditar()); ?>
     <?php if (Permisos::puedeEditar()): ?>
         <?php $form = ActiveForm::begin([
             'action' => ['cartas-vinc/aceptar-aceptacion'],

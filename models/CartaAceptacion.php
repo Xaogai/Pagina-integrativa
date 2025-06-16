@@ -49,10 +49,10 @@ class CartaAceptacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_alumno', 'id_semestre', 'id_ciclo', 'area', 'horario', 'fecha_inicio_servicio', 'fecha_termino_servicio'], 'required'],
+            [['id_alumno', 'id_semestre', 'id_ciclo', 'area', 'horario', 'fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_insercion'], 'required'],
             [['id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
             [['status', 'comentario_vinculacion'], 'string'],
-            [['fecha_inicio_servicio', 'fecha_termino_servicio', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino', 'fecha_insercion'], 'safe'],
+            [['fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
             [['area'], 'string', 'max' => 100],
             [['horario'], 'string', 'max' => 200],
             ['status', 'default', 'value' => self::STATUS_EN_REVISION],
