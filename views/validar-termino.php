@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use app\components\Permisos;
 function traducirMes($fechaIngles) {
     $meses = [
         'January' => 'Enero',
