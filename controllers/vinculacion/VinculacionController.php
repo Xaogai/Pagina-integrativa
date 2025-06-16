@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use app\models\CartaPresentacion;
 use app\models\CartaAceptacion;
 use app\models\CartaTermino;
+use app\models\HojaDatos;
 
 class VinculacionController extends Controller
 {
@@ -81,7 +82,7 @@ class VinculacionController extends Controller
 
     public function actionDatos()
     {
-        $cartas = $this->getFilteredCartas(CartaPresentacion::class);
+        $cartas = $this->getFilteredCartas(HojaDatos::class);
         
         return $this->render('/vinculacion/hoja-datos', [
             'cartas' => $cartas,
