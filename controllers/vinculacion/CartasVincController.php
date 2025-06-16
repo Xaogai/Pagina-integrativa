@@ -7,6 +7,7 @@ use Mpdf\Mpdf;
 use app\models\CartaPresentacion; 
 use app\models\CartaAceptacion; 
 use app\models\CartaTermino;
+use app\models\HojaDatos;
 use yii\filters\AccessControl;
 
 class CartasVincController extends Controller
@@ -212,6 +213,86 @@ class CartasVincController extends Controller
         ]);
     }
     
+        public function actionValidarDatos()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+        
+        // Obtener la carta de DATOS (ajusta la tabla según tu BD)
+        $carta = HojaDatos::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = hoja_datos.id_alumno')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de datos.');
+        }
+
+        return $this->render('/cartas-vinc/validar-datos', [
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelHojaDatos' => $carta
+        ]);
+    }
+
+    public function actionValidarPresentacion()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+        
+        // Obtener la carta de PRESENTACIÓN
+        $carta = CartaPresentacion::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_presentacion.id_alumno')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de presentación.');
+        }
+
+        return $this->render('/cartas-vinc/validar-presentacion', [
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelCartaPresentacion' => $carta
+        ]);
+    }
+
+    public function actionValidarTerminacion()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+        
+        // Obtener la carta de TERMINACIÓN
+        $carta = CartaTerminacion::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_terminacion.id_alumno')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de terminación.');
+        }
+
+        return $this->render('/cartas-vinc/validar-termino', [
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelCartaTermino' => $carta
+        ]);
+    }
 
     public function actionAceptarAceptacion()
     {
