@@ -8,6 +8,7 @@ use app\models\CartaPresentacion;
 use app\models\CartaAceptacion; 
 use app\models\CartaTermino;
 use app\models\HojaDatos;
+use app\models\FondoCbt;
 
 class PracticasController extends Controller
 {   
@@ -36,6 +37,9 @@ class PracticasController extends Controller
         # SI carta-presentacion EN LA BASE NO TIENE DATOS
         #var_dump($cartas); exit;
 
+        $fondo = FondoCbt::find()->where(['status' => 'VIGENTE'])->one();
+        $rutaFondo = Yii::getAlias('@webroot/uploads/fondos/' . $fondo->fondo_imagen);
+
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
         $styleCssFile = Yii::getAlias('@webroot/css/style-presentacion.css');
         $resetCss = file_get_contents($resetCssFile);
@@ -48,6 +52,9 @@ class PracticasController extends Controller
         ]);
 
         $mpdf = new Mpdf();
+
+        $mpdf->SetDefaultBodyCSS('background', "url('$rutaFondo')");
+        $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
 
         $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
 
@@ -76,7 +83,8 @@ class PracticasController extends Controller
                 'carta_aceptacion.fecha_termino_servicio AS fecha_final',
                 'carta_aceptacion.horario AS horarios',
                 'empresa.jefe_inmediato AS nombre_jefe',
-                'empresa.cargo AS cargo_jefe'
+                'empresa.cargo AS cargo_jefe',
+                'empresa.logo AS logo'
             ])
             ->joinWith([
                 'alumno' => function($query) {
@@ -94,6 +102,9 @@ class PracticasController extends Controller
 
         #var_dump($cartas); exit;
 
+        $fondo = FondoCbt::find()->where(['status' => 'VIGENTE'])->one();
+        $rutaFondo = Yii::getAlias('@webroot/uploads/fondos/' . $fondo->fondo_imagen);
+
         $resetCssFile = Yii::getAlias('@webroot/css/reset.css');
         $styleCssFile = Yii::getAlias('@webroot/css/style-aceptacion.css');
 
@@ -107,6 +118,9 @@ class PracticasController extends Controller
         ]);
 
         $mpdf = new Mpdf();
+
+        $mpdf->SetDefaultBodyCSS('background', "url('$rutaFondo')");
+        $mpdf->SetDefaultBodyCSS('background-image-resize', 6);
 
         $mpdf->WriteHTML($css, \Mpdf\HTMLParserMode::HEADER_CSS);
 
@@ -132,6 +146,7 @@ class PracticasController extends Controller
                 'empresa.nombre AS nombre_empresa',
                 'empresa.jefe_inmediato',
                 'empresa.cargo',
+                'empresa.logo AS logo',
                 'cualidades.cualidades AS cualidades_carrera' 
             ])
             ->joinWith(['alumno', 'alumno.carrera', 'semestre'])

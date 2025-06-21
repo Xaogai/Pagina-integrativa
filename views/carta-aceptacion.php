@@ -34,19 +34,22 @@ function traducirMes($fechaIngles) {
     </head>
     <body>
         <header>
-            <div class="asunto">
-                <p>ASUNTO: ACEPTACIÓN DE PRÁCTICAS<br>
-                    DE EJECUCIÓN DE COMPETENCIAS</p>
-            </div>
-            <div class="fecha-actual">
-                San Bartolomé, Tlaltelulco, Metepec, Méx., a 
-                <?= isset($cartas[0]['fecha_emision']) ? 
-                    traducirMes(Yii::$app->formatter->asDate($cartas[0]['fecha_emision'], 'php:j \d\e F \d\e Y')) : 
-                    traducirMes(date('j \d\e F \d\e Y')) ?>
-            </div>
-        </header>
-        <main>
             <?php if ($cartas): ?> 
+                <div style="text-align: center;">
+                    <img src=<?= Html::encode($cartas[0]['logo'] ?? 'Logo no disponible') ?> style="width: 120px; height: auto;" alt="Logo">
+                </div>
+                <div class="asunto">
+                    <p>ASUNTO: ACEPTACIÓN DE PRÁCTICAS<br>
+                        DE EJECUCIÓN DE COMPETENCIAS</p>
+                </div>
+                <div class="fecha-actual">
+                    San Bartolomé, Tlaltelulco, Metepec, Méx., a 
+                    <?= isset($cartas[0]['fecha_emision']) ? 
+                        traducirMes(Yii::$app->formatter->asDate($cartas[0]['fecha_emision'], 'php:j \d\e F \d\e Y')) : 
+                        traducirMes(date('j \d\e F \d\e Y')) ?>
+                </div>
+            </header>
+            <main>
                 <div class="presente">
                     <p>MTRO. EN D. P. FRANCISCO RICARDO LÓPEZ SOTELO</p>
                     <p>DIRECTOR ESCOLAR DEL CBT No. 2, METEPEC</p>
