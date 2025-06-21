@@ -1,0 +1,66 @@
+/*FONT*/
+body
+{
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    line-height: 1.1;
+}
+
+/*HEADER*/
+.asunto
+{
+    text-align: right;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.fecha-actual
+{
+    text-align: right;
+    margin: 3em 0;
+}
+
+/*MAIN*/
+.presente, strong
+{
+    font-weight: bold;
+}
+
+.presente p
+{    
+    padding: 1px 0;
+}
+
+.contenido
+{
+    text-align: justify;
+    word-spacing: 2px;
+    hyphens: auto;
+    padding: 1em 0;
+}
+
+.cualidades {
+    list-style-type: disc;
+    padding-left: 4em;
+}
+
+.cualidades li {
+    display: list-item;
+}
+
+.contenido .final
+{
+    padding-top: 1em;
+}
+
+.firma
+{
+    padding-top: 4em;
+    text-align: center;
+}
+
+.firma .primero
+{
+    padding-bottom: 5em;
+}

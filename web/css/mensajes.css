@@ -1,0 +1,70 @@
+
+#custom-dialog {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#custom-dialog-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#custom-dialog-box {
+    position: relative;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 10000;
+    min-width: 300px;
+}
+
+#custom-dialog-message {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+#custom-dialog-buttons button {
+    margin: 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#custom-dialog-accept {
+    background-color:rgb(3, 47, 94);
+    color: white;
+}
+
+#custom-dialog-cancel {
+    background-color: #e0e0e0;
+}
+
+/* Estilos por tipo */
+.dialog-success #custom-dialog-box {
+    background-color: #28a745;
+    color: white;
+}
+
+.dialog-error #custom-dialog-box {
+    background-color: #dc3545;
+    color: white;
+}
+
+.dialog-info #custom-dialog-box {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.dialog-warning #custom-dialog-box {
+    background-color: #ffc107;
+    color: black;
+}

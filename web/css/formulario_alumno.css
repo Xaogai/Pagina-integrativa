@@ -1,0 +1,194 @@
+/* Estilos específicos para el formulario de datos-generales.php */
+
+/* Contenedor principal del formulario */
+.alumno-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor del formulario */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Fila del formulario */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+/* Grupo de campos */
+.form-group {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+/* Grupo de botones */
+.buttons-group{
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: space-between;
+}
+
+/* Etiquetas de los campos */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Inputs y dropdowns */
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Estilo para los dropdowns */
+.form-input select {
+    appearance: none; /* Elimina el estilo por defecto del dropdown */
+    background-color: white;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px; /* Espacio para la flecha del dropdown */
+}
+
+/* Botón de guardar */
+.btn-primary {
+    border-radius: 4px;
+    border: 1px solid;
+    width: 20%;
+    padding: 9px;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    font-weight: normal;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #080438;
+}
+
+/* Estilos para el botón de guardar cuando está deshabilitado */
+.btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Botón secundario (editar/cancelar) */
+.btn-secondary {
+    background-color: #6c757d;  /* Gris azulado */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Efecto hover */
+.btn-secondary:hover {
+    background-color: #5a6268;  /* Ton más oscuro */
+    transform: translateY(-1px);  /* Levanta ligeramente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Efecto al hacer clic */
+.btn-secondary:active {
+    background-color: #4e555b;
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensajes de error */
+.help-block {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Estilos para el campo de fecha */
+input[type="date"] {
+    appearance: none;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .alumno-form {
+        max-width: 100%;
+        margin: 0;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+        margin-bottom: 10px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .form-input select {
+        padding-right: 25px;
+        background-size: 16px;
+        background-position: right 8px center;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    input[type="date"] {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .help-block {
+        font-size: 12px;
+    }
+}

@@ -9,12 +9,11 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\authclient\ClientInterface;
+use app\models\Usuarios;
 
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
@@ -38,9 +37,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -51,91 +47,120 @@ class SiteController extends Controller
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex()
+    public function onAuthSuccess(ClientInterface $client)
     {
-        return $this->render('index');
-    }
+        $attributes = $client->getUserAttributes();
+        
+        if (!isset($attributes['email']) || !isset($attributes['id'])) {
+            Yii::$app->session->setFlash('error', 'No se pudo obtener la información necesaria del proveedor.');
+            return $this->redirect(['site/login']);
+        }
+        
+        $email = $attributes['email'];
+        $googleId = $attributes['id'];
 
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
+        $usuario = Usuarios::findOne(['correo' => $email]);
+
+        if (!$usuario) {
+            Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
+            return $this->redirect(['site/login']);
+        }
+
+        // Verifica que el usuario tenga un tipo_usuario válido
+        if (empty($usuario->tipo_usuario)) {
+            Yii::$app->session->setFlash('error', 'El usuario no tiene un rol asignado.');
+            return $this->redirect(['site/login']);
+        }
+
+        if (empty($usuario->token)) {
+            $usuario->token = $googleId;
+            if (!$usuario->save()) {
+                Yii::$app->session->setFlash('error', 'Error al guardar el token.');
+                return $this->redirect(['site/login']);
+            }
+        }
+
+        // Inicia sesión
+        if (Yii::$app->user->login($usuario)) {
+            // Guarda todos los datos relevantes en la sesión
+            Yii::$app->session->set('user_id', $usuario->id);
+            Yii::$app->session->set('user_role', $usuario->tipo_usuario);
+            
+            return $this->redirigirPorRol();
+        }
+
+        Yii::$app->session->setFlash('error', 'Error en autenticación');
+        return $this->redirect(['site/login']);
+    }
+    
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            return $this->redirigirPorRol();
         }
-
+    
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->login()) {
+                return $this->redirigirPorRol();
+            }
+            Yii::$app->session->setFlash('error', 'Credenciales incorrectas');
         }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+    
+        return $this->render('login', ['model' => $model]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
+    private function redirigirPorRol()
+    {
+        $usuario = Yii::$app->user->identity;
+        if (!$usuario) {
+            Yii::$app->user->logout();
+            return $this->redirect(['site/login']);
+        }
+
+        switch ($usuario->getRol()) {
+            case 'SUPERVINCULACION':
+            case 'VINCULACION':
+            case 'MINIVINCULACION':
+                return $this->redirect(['/vinculacion']);
+            case 'ESTUDIANTE':
+                return $this->redirect(['/alumno']);
+            default:
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', 'Rol no válido');
+                return $this->redirect(['site/login']);
+        }
+    }
+
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
+        // Cerrar sesión en la aplicación
+        Yii::$app->user->logout(true);
+    
+        // Verifica si hay un cliente OAuth en la sesión
+        if (Yii::$app->session->has('authClient')) {
+            $clientName = Yii::$app->session->get('authClient');
+    
+            // Redirigir al usuario a la página de cierre de sesión del proveedor OAuth
+            switch ($clientName) {
+                case 'google':
+                    return $this->redirect('https://accounts.google.com/Logout');
+                    break;
+                // Agrega más casos para otros proveedores OAuth
+                default:
+                    return $this->redirect(['site/login']);
+            }
         }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-    public function actionCheckAccess()
-    {
-        $userId = 1; // ID del usuario que quieres verificar
-        $permission = 'manageUsers'; // Permiso a verificar
-
-        if (Yii::$app->authManager->checkAccess($userId, $permission)) {
-            return "✅ El usuario tiene permisos para gestionar usuarios.";
-        } else {
-            return "❌ El usuario NO tiene permisos.";
-        }
+    
+        // Redirigir al usuario a la página de login
+        return $this->redirect(['site/login']);
     }
 
 }
