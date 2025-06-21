@@ -52,6 +52,9 @@ class CartaAceptacionController extends Controller
             $model->id_ciclo = $alumno->id_ciclo;
             $model->status = CartaAceptacion::STATUS_EN_REVISION;
             $model->fecha_emision = date('Y-m-d');
+            if (!$this->campoEstaLleno(CartaAceptacion::class, $idAlumno, 'fecha_insercion')) {
+                $model->fecha_insercion = date('Y-m-d');
+            }
             
 
             if ($model->save()) {
@@ -87,5 +90,17 @@ class CartaAceptacionController extends Controller
         }
 
         throw new NotFoundHttpException('El alumno no existe.');
+    }
+
+    public function campoEstaLleno($modelClass, $id, $attribute)
+    {
+        $valor = $modelClass::find()
+            ->select([$attribute])
+            ->where(['id_alumno' => $id])
+            ->scalar();
+        
+        return !empty($valor) && 
+            $valor !== '0000-00-00' && 
+            $valor !== '0000-00-00 00:00:00';
     }
 }
