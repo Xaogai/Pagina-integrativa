@@ -1,0 +1,66 @@
+.titulo-pagina
+{
+    margin: 1em 0 20px 0;
+}
+
+.form-permisos
+{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 5%;
+}
+
+.titulo-form
+{
+    width: 20%;
+    font-weight: bold;
+}
+
+.form-permisos select
+{
+    width: 80%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid ;
+}
+
+.informacion-usuario
+{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1em 0;
+}
+
+.usuario, .tipo-usuario
+{
+    width: 50%;
+}
+
+.info
+{
+    text-align: center;
+}
+
+.permisos-checkbox
+{
+    width: 100%;
+    padding: 0 0 1em 0;
+}
+
+.permisos-checkbox .titulo-form
+{
+    margin: 1em 0; 
+}
+
+.permisos-checkbox input
+{
+    margin: 5px 5%;
+    color: #286090;
+    width: 1.15em;
+    height: 1.15em;
+    border: 5em solid #286090;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
+}

@@ -65,14 +65,20 @@ class SiteController extends Controller
         
         $email = $attributes['email'];
         $googleId = $attributes['id'];
-    
+
         $usuario = Usuarios::findOne(['correo' => $email]);
-    
+
         if (!$usuario) {
             Yii::$app->session->setFlash('error', 'El correo no está registrado en el sistema.');
             return $this->redirect(['site/login']);
         }
-    
+
+        // Verifica que el usuario tenga un tipo_usuario válido
+        if (empty($usuario->tipo_usuario)) {
+            Yii::$app->session->setFlash('error', 'El usuario no tiene un rol asignado.');
+            return $this->redirect(['site/login']);
+        }
+
         if (empty($usuario->token)) {
             $usuario->token = $googleId;
             if (!$usuario->save()) {
@@ -80,64 +86,58 @@ class SiteController extends Controller
                 return $this->redirect(['site/login']);
             }
         }
-    
+
         // Inicia sesión
-        Yii::$app->user->login($usuario);
-        // 🔥 **GUARDA EL ID DEL USUARIO EN LA SESIÓN** 🔥
-        Yii::$app->session->set('user_id', $usuario->id);
-    
-        // Verificamos el tipo de usuario y redirigimos
-        if ($usuario->tipo_usuario == 'ESTUDIANTE') {
-            return $this->redirect(['/alumno']);
-        } elseif ($usuario->tipo_usuario == 'VINCULACION') {
-            return $this->redirect(['/vinculacion']);
+        if (Yii::$app->user->login($usuario)) {
+            // Guarda todos los datos relevantes en la sesión
+            Yii::$app->session->set('user_id', $usuario->id);
+            Yii::$app->session->set('user_role', $usuario->tipo_usuario);
+            
+            return $this->redirigirPorRol();
         }
-    
-        // Si el tipo de usuario no es reconocido, lo deslogueamos
-        Yii::$app->user->logout();
+
+        Yii::$app->session->setFlash('error', 'Error en autenticación');
         return $this->redirect(['site/login']);
     }
     
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            // Obtener el usuario autenticado
-            $usuario = Yii::$app->user->identity;
-
-            // Verificar el tipo de usuario y redirigir según corresponda
-            if ($usuario->tipo_usuario == 'ESTUDIANTE') {
-                return $this->redirect(['/alumno']); // Redirige a la vista de alumno
-            } elseif ($usuario->tipo_usuario == 'VINCULACION') {
-                return $this->redirect(['/vinculacion']); // Redirige a la vista de vinculación
-            }
-
-            // Si el usuario no es de tipo "alumno" ni "vinculacion", redirigirlo al login
-            Yii::$app->user->logout();
-            return $this->redirect(['site/login']);
+            return $this->redirigirPorRol();
         }
-
+    
         $model = new LoginForm();
-
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            // Obtener el usuario autenticado
-            $usuario = Yii::$app->user->identity;
-
-            // Verificar el tipo de usuario
-            if ($usuario->tipo_usuario == 'alumno') {
-                return $this->redirect(['/alumno']);
-            } elseif ($usuario->tipo_usuario == 'vinculacion') {
-                return $this->redirect(['/vinculacion']);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->login()) {
+                return $this->redirigirPorRol();
             }
-
-            // Si el tipo de usuario no es reconocido, desloguear y redirigir a login
-            Yii::$app->user->logout();
-            return $this->redirect(['site/login']);
+            Yii::$app->session->setFlash('error', 'Credenciales incorrectas');
         }
-
+    
         return $this->render('login', ['model' => $model]);
     }
 
+    private function redirigirPorRol()
+    {
+        $usuario = Yii::$app->user->identity;
+        if (!$usuario) {
+            Yii::$app->user->logout();
+            return $this->redirect(['site/login']);
+        }
 
+        switch ($usuario->getRol()) {
+            case 'SUPERVINCULACION':
+            case 'VINCULACION':
+            case 'MINIVINCULACION':
+                return $this->redirect(['/vinculacion']);
+            case 'ESTUDIANTE':
+                return $this->redirect(['/alumno']);
+            default:
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', 'Rol no válido');
+                return $this->redirect(['site/login']);
+        }
+    }
 
     public function actionLogout()
     {

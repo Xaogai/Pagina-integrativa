@@ -14,7 +14,7 @@ $this->registerJsFile('@web/js/custom-dialog.js', ['depends' => [\yii\web\Jquery
 $this->registerJsFile('@web/js/manipula-dialog.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 
 // Incluir el componente de diálogo
-echo $this->render('//components/dialog_box');?>
+echo $this->render('@app/components/dialog_box');?>
 
 <div class="carta-aceptacion-form">
     <?php if (Yii::$app->session->hasFlash('success')): ?>

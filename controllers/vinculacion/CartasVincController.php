@@ -7,6 +7,7 @@ use Mpdf\Mpdf;
 use app\models\CartaPresentacion; 
 use app\models\CartaAceptacion; 
 use app\models\CartaTermino;
+use app\models\HojaDatos;
 use yii\filters\AccessControl;
 
 class CartasVincController extends Controller
@@ -188,79 +189,166 @@ class CartasVincController extends Controller
     public function actionValidarAceptacion()
     {
         $request = Yii::$app->request;
-        $idUsuario = $request->post('id');  
-    
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
         if (!$idUsuario) {
             throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
         }
-    
-        $cartas = CartaAceptacion::find()
-            ->select([
-                'carta_aceptacion.*',
-                'alumnos.id_alumno',
-                'alumnos.nombre AS nombre_alumno',
-                'alumnos.apellido_paterno',
-                'alumnos.apellido_materno',
-                'turnos.nombre AS turno',
-                'carrera.nombre AS carrera',
-                'semestre.nombre AS semestre',
-                'ciclo_escolar.ciclo AS ciclo_escolar',
-                'empresa.nombre AS nombre_empresa',
-                'carta_aceptacion.area AS area_empresa',
-                'carta_aceptacion.fecha_inicio_servicio AS fecha_inicial',
-                'carta_aceptacion.fecha_termino_servicio AS fecha_final',
-                'carta_aceptacion.horario AS horarios',
-                'empresa.jefe_inmediato AS nombre_jefe',
-                'empresa.cargo AS cargo_jefe'
-            ])
-            ->joinWith([
-                'alumno' => function($query) {
-                    $query->joinWith(['carrera', 'turno']);
-                },
-                'alumno.hojaDatos', // Relación con hoja_datos
-                'semestre', 
-                'ciclo'
-            ])
-            ->innerJoin('empresa', 'empresa.id_empresa = hoja_datos.id_empresa')
+        
+        // Obtener la carta
+        $carta = CartaAceptacion::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_aceptacion.id_alumno')
             ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
             ->where(['usuarios.id_usuario' => $idUsuario])
-            ->asArray()
-            ->all();
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de aceptación.');
+        }
 
-    
-        // Renderiza nueva vista
         return $this->render('/validar-aceptacion', [
-            'cartas' => $cartas,
-            'idUsuario' => $idUsuario
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelCartaAceptacion' => $carta // Pasamos el modelo para el formulario
         ]);
     }
     
+        public function actionValidarDatos()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+        
+        // Obtener la carta de DATOS (ajusta la tabla según tu BD)
+        $carta = HojaDatos::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = hoja_datos.id_alumno')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de datos.');
+        }
+
+        return $this->render('/cartas-vinc/validar-datos', [
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelHojaDatos' => $carta
+        ]);
+    }
+
+    public function actionValidarPresentacion()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+        
+        // Obtener la carta de PRESENTACIÓN
+        $carta = CartaPresentacion::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_presentacion.id_alumno')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de presentación.');
+        }
+
+        return $this->render('/cartas-vinc/validar-presentacion', [
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelCartaPresentacion' => $carta
+        ]);
+    }
+
+    public function actionValidarTerminacion()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));  
+        
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+        
+        // Obtener la carta de TERMINACIÓN
+        $carta = CartaTerminacion::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_terminacion.id_alumno')
+            ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+            ->where(['usuarios.id_usuario' => $idUsuario])
+            ->one();
+        
+        if (!$carta) {
+            throw new \yii\web\NotFoundHttpException('No se encontró la carta de terminación.');
+        }
+
+        return $this->render('/cartas-vinc/validar-termino', [
+            'carta' => $carta,
+            'idUsuario' => $idUsuario,
+            'modelCartaTermino' => $carta
+        ]);
+    }
 
     public function actionAceptarAceptacion()
     {
-        $id = Yii::$app->request->post('id');
-        $carta = CartaAceptacion::find()->where(['id_usuario' => $id])->one();
-        if ($carta) {
-            $carta->estado = 'ACEPTADO';
-            $carta->save();
-        }
-        return $this->redirect(['documento/index']); // O a donde quieras
-    }
-    
-    public function actionRechazarAceptacion()
-    {
-        $id = Yii::$app->request->post('id');
-        $comentario = Yii::$app->request->post('comentario');
+        $request = Yii::$app->request;
+        $idUsuario = $request->post('id');
         
-        $carta = CartaAceptacion::find()->where(['id_usuario' => $id])->one();
+        // Buscar la carta del alumno asociado al usuario
+        $carta = CartaAceptacion::find()
+            ->innerJoinWith(['alumno' => function($query) use ($idUsuario) {
+                $query->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+                    ->andWhere(['usuarios.id_usuario' => $idUsuario]);
+            }])
+            ->one();
+
         if ($carta) {
-            $carta->estado = 'RECHAZADO';
-            $carta->comentario_rechazo = $comentario; // si tienes ese campo
-            $carta->save();
+            $carta->status = CartaAceptacion::STATUS_ACEPTADO;
+            if ($carta->save()) {
+                Yii::$app->session->setFlash('success', 'Carta aceptada correctamente.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Error al aceptar la carta: ' . print_r($carta->errors, true));
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'No se encontró la carta de aceptación.');
         }
+        
         return $this->redirect(['documento/index']);
     }
 
+    public function actionRechazarAceptacion()
+    {
+        $request = Yii::$app->request;
+        $idUsuario = $request->post('id');
+        $comentario = $request->post('comentario');
+        
+        $carta = CartaAceptacion::find()
+            ->innerJoinWith(['alumno' => function($query) use ($idUsuario) {
+                $query->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
+                    ->andWhere(['usuarios.id_usuario' => $idUsuario]);
+            }])
+            ->one();
+
+        if ($carta) {
+            $carta->status = CartaAceptacion::STATUS_RECHAZADO;
+            $carta->comentario_vinculacion = $comentario;
+            
+            if ($carta->save()) {
+                Yii::$app->session->setFlash('success', 'Carta rechazada correctamente.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Error al rechazar la carta: ' . print_r($carta->errors, true));
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'No se encontró la carta de aceptación.');
+        }
+        
+        return $this->redirect(['documento/index']);
+    }
 
 
 
@@ -286,20 +374,20 @@ class CartasVincController extends Controller
     }
 
 
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['index', 'aceptacion', 'presentacion'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'], // Solo usuarios autenticados
-                    ],
-                ],
-            ],
-        ];
-    }
+    #public function behaviors()
+    #{
+    #    return [
+    #        'access' => [
+    #            'class' => AccessControl::class,
+    #            'only' => ['index', 'aceptacion', 'presentacion'],
+    #            'rules' => [
+    #                [
+    #                    'allow' => true,
+    #                    'roles' => ['@'], // Solo usuarios autenticados
+    #                ],
+    #            ],
+    #        ],
+    #    ];
+    #}
 
 }

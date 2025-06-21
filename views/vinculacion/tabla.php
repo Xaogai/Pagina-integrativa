@@ -143,36 +143,48 @@ $this->registerCssFile('@web/css/tabla.css');
 
     <script> 
         document.querySelectorAll('tr.datos').forEach(function(row) {
-            row.addEventListener('click', function () {
-                const id = this.querySelector('td.hidden').innerText.trim();
+        row.addEventListener('click', function() {
+            const id = this.querySelector('td.hidden').innerText.trim();
+            
+            // Extrae el tipo de carta de la URL actual (ej: "aceptacion", "datos")
+            const currentPath = window.location.pathname; // Ej: "/vinculacion/aceptacion"
+            const tipo = currentPath.split('/').pop(); // Obtiene el último segmento
 
-                // Crear un formulario temporal
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/cartas-vinc/validar-aceptacion'; // Tu acción existente
-                form.target = '_blank'; // Para abrir el PDF en nueva pestaña
+            // Mapeo de tipos a rutas (ajusta según tus rutas Yii2)
+            const rutas = {
+                'aceptacion': '/cartas-vinc/validar-aceptacion',
+                'datos': '/cartas-vinc/validar-datos',
+                'presentacion': '/cartas-vinc/validar-presentacion',
+                'terminacion': '/cartas-vinc/validar-termino'
+            };
 
-                // Agregar campo oculto con el ID
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'id';
-                input.value = id;
-                form.appendChild(input);
+            // Crear formulario dinámico
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = rutas[tipo] || rutas.aceptacion; // Usa la ruta según el tipo (o default)
+            form.target = '_blank';
 
-                const csrfParam = document.querySelector('meta[name="csrf-param"]').getAttribute('content');
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // Agregar campos (ID + CSRF)
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = id;
+            form.appendChild(inputId);
 
-                const inputCsrf = document.createElement('input');
-                inputCsrf.type = 'hidden';
-                inputCsrf.name = csrfParam;
-                inputCsrf.value = csrfToken;
-                form.appendChild(inputCsrf);
+            // Token CSRF (como en tu código original)
+            const csrfParam = document.querySelector('meta[name="csrf-param"]').content;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            const inputCsrf = document.createElement('input');
+            inputCsrf.type = 'hidden';
+            inputCsrf.name = csrfParam;
+            inputCsrf.value = csrfToken;
+            form.appendChild(inputCsrf);
 
-                document.body.appendChild(form);
-                form.submit();
-                document.body.removeChild(form);
-            });
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
         });
+    });
     </script>
 
     <?php

@@ -44,4 +44,24 @@ class Usuarios extends ActiveRecord implements IdentityInterface
         // Valida la clave de autenticación
         return $this->getAuthKey() === $authKey;
     }
+    public function getRol()
+    {
+        return $this->tipo_usuario ?? null; // Null coalescing para evitar errores
+    }
+
+    public function esSuperVinculacion()
+    {
+        return $this->getRol() === 'SUPERVINCULACION';
+    }
+
+    public function esVinculacion()
+    {
+        return $this->getRol() === 'VINCULACION';
+    }
+
+    public function esMiniVinculacion()
+    {
+        return $this->getRol() === 'MINIVINCULACION';
+    }
+
 }
