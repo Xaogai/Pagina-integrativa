@@ -43,6 +43,7 @@ class VinculacionController extends Controller
         $query = $modelClass::find()
             ->select([
                 "{$modelClass::tableName()}.*",
+                'alumnos.id_usuario',
                 'alumnos.nombre',
                 'alumnos.apellido_paterno',
                 'alumnos.apellido_materno',

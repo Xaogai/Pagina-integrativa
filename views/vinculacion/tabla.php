@@ -125,7 +125,7 @@ $this->registerCssFile('@web/css/tabla.css');
                 <tbody>
                     <?php foreach ($cartas as $index => $carta): ?>
                         <tr class="datos">
-                            <td class="hidden"><?= Html::encode($carta['id_alumno']) ?></td>
+                            <td class="hidden"><?= Html::encode($carta['id_usuario']) ?></td>
                             <td><?= Html::encode($carta['nombre']) ?></td>
                             <td><?= Html::encode($carta['apellido_paterno']) ?></td>
                             <td><?= Html::encode($carta['apellido_materno']) ?></td>
