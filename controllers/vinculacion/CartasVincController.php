@@ -294,68 +294,123 @@ class CartasVincController extends Controller
         ]);
     }
 
-    public function actionAceptarAceptacion()
-    {
-        $request = Yii::$app->request;
-        $idUsuario = $request->post('id');
-        
-        // Buscar la carta del alumno asociado al usuario
-        $carta = CartaAceptacion::find()
-            ->innerJoinWith(['alumno' => function($query) use ($idUsuario) {
-                $query->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
-                    ->andWhere(['usuarios.id_usuario' => $idUsuario]);
-            }])
-            ->one();
+ /**
+ * Acción genérica para aceptar con parámetros predefinidos
+ * 
+ * @param string $modelClass Clase del modelo
+ * @return \yii\web\Response
+ */
+public function actionAceptarGenerico($modelClass)
+{
+    return $this->actionAceptarGenericoCompleto(
+        $modelClass,
+        'status',
+        constant("$modelClass::STATUS_ACEPTADO"), // Usamos constantes del modelo
+        'alumno',
+        'usuarios',
+        ['documento/index'],
+        'Registro aceptado correctamente.',
+        'No se encontró el registro.'
+    );
+}
 
-        if ($carta) {
-            $carta->status = CartaAceptacion::STATUS_ACEPTADO;
-            if ($carta->save()) {
-                Yii::$app->session->setFlash('success', 'Carta aceptada correctamente.');
-            } else {
-                Yii::$app->session->setFlash('error', 'Error al aceptar la carta: ' . print_r($carta->errors, true));
-            }
+/**
+ * Acción genérica para rechazar con parámetros predefinidos
+ * 
+ * @param string $modelClass Clase del modelo
+ * @return \yii\web\Response
+ */
+public function actionRechazarGenerico($modelClass)
+{
+    return $this->actionRechazarGenericoCompleto(
+        $modelClass,
+        'status',
+        constant("$modelClass::STATUS_RECHAZADO"), // Usamos constantes del modelo
+        'comentario_vinculacion',
+        'alumno',
+        'usuarios',
+        ['documento/index'],
+        'Registro rechazado correctamente.',
+        'No se encontró el registro.'
+    );
+}
+
+/**
+ * Versión completa con todos parámetros (para uso interno)
+ */
+protected function actionAceptarGenericoCompleto(
+    $modelClass, $statusField, $acceptedValue, $relationName, 
+    $userRelation, $redirectRoute, $successMessage, $errorMessage
+) {
+    $request = Yii::$app->request;
+    $idUsuario = $request->post('id');
+    
+    $model = $modelClass::find()
+        ->innerJoinWith([$relationName => function($query) use ($idUsuario, $userRelation) {
+            $query->innerJoin($userRelation, "$userRelation.id_usuario = $relationName.id_usuario")
+                ->andWhere(["$userRelation.id_usuario" => $idUsuario]);
+        }])
+        ->one();
+
+    if ($model) {
+        $model->$statusField = $acceptedValue;
+        if ($model->save()) {
+            Yii::$app->session->setFlash('success', $successMessage);
         } else {
-            Yii::$app->session->setFlash('error', 'No se encontró la carta de aceptación.');
+            Yii::$app->session->setFlash('error', 'Error al aceptar: ' . print_r($model->errors, true));
         }
-        
-        return $this->redirect(['documento/index']);
+    } else {
+        Yii::$app->session->setFlash('error', $errorMessage);
     }
+    
+    return $this->redirect($redirectRoute);
+}
 
-    public function actionRechazarAceptacion()
-    {
-        $request = Yii::$app->request;
-        $idUsuario = $request->post('id');
-        $comentario = $request->post('comentario');
+/**
+ * Versión completa con todos parámetros (para uso interno)
+ */
+protected function actionRechazarGenericoCompleto(
+    $modelClass, $statusField, $rejectedValue, $commentField, 
+    $relationName, $userRelation, $redirectRoute, $successMessage, $errorMessage
+) {
+    $request = Yii::$app->request;
+    $idUsuario = $request->post('id');
+    $comentario = $request->post('comentario');
+    
+    $model = $modelClass::find()
+        ->innerJoinWith([$relationName => function($query) use ($idUsuario, $userRelation) {
+            $query->innerJoin($userRelation, "$userRelation.id_usuario = $relationName.id_usuario")
+                ->andWhere(["$userRelation.id_usuario" => $idUsuario]);
+        }])
+        ->one();
+
+    if ($model) {
+        $model->$statusField = $rejectedValue;
+        $model->$commentField = $comentario;
         
-        $carta = CartaAceptacion::find()
-            ->innerJoinWith(['alumno' => function($query) use ($idUsuario) {
-                $query->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
-                    ->andWhere(['usuarios.id_usuario' => $idUsuario]);
-            }])
-            ->one();
-
-        if ($carta) {
-            $carta->status = CartaAceptacion::STATUS_RECHAZADO;
-            $carta->comentario_vinculacion = $comentario;
-            
-            if ($carta->save()) {
-                Yii::$app->session->setFlash('success', 'Carta rechazada correctamente.');
-            } else {
-                Yii::$app->session->setFlash('error', 'Error al rechazar la carta: ' . print_r($carta->errors, true));
-            }
+        if ($model->save()) {
+            Yii::$app->session->setFlash('success', $successMessage);
         } else {
-            Yii::$app->session->setFlash('error', 'No se encontró la carta de aceptación.');
+            Yii::$app->session->setFlash('error', 'Error al rechazar: ' . print_r($model->errors, true));
         }
-        
-        return $this->redirect(['documento/index']);
+    } else {
+        Yii::$app->session->setFlash('error', $errorMessage);
     }
-
+    
+    return $this->redirect($redirectRoute);
+}
 
 
     public function actionDatos()
     {
-        $idUsuario = Yii::$app->session->get('user_id');
-        
+        $request = Yii::$app->request;
+        $idUsuario = $request->get('id', $request->post('id'));
+
+        if (!$idUsuario) {
+            throw new \yii\web\BadRequestHttpException('ID de usuario no proporcionado.');
+        }
+
+        $this->idUsuario = $idUsuario;
         $datos = HojaDatos::find()
         ->select([
             'alumnos.nombre AS nombre_alumno',
@@ -390,8 +445,8 @@ class CartasVincController extends Controller
         ->innerJoin('empresa', 'empresa.id_empresa = hoja_datos.id_empresa')
         ->where(['usuarios.id_usuario' => $idUsuario])
         ->asArray()
-        ->all();
-
+        ->one();
+        //var_dump($datos); exit;
         // Datos combinados
         $datos['nombre_completo'] = $datos['nombre_alumno'] . ' ' . $datos['apellido_paterno'] . ' ' . $datos['apellido_materno'];
         $datos['grupo_turno'] = $datos['semestre'] . ' - ' . $datos['turno'];
@@ -420,9 +475,8 @@ class CartasVincController extends Controller
         $styleCss = file_get_contents($styleCssFile);
 
         $css = $resetCss . "\n" . $styleCss;
-
         $html = $this->renderPartial('//carta-datos', [
-            'cartas' => $datos, 
+            'datos' => $datos, 
         ]);
 
         $mpdf = new Mpdf();
@@ -434,7 +488,49 @@ class CartasVincController extends Controller
         return $mpdf->Output('carta-datos.pdf', 'I');
     }
 
+    // Para CartaPresentacion
+    public function actionAceptarPresentacion()
+    {
+        return $this->actionAceptarGenerico('app\models\CartaPresentacion');
+    }
 
+    public function actionRechazarPresentacion()
+    {
+        return $this->actionRechazarGenerico('app\models\CartaPresentacion');
+    }
+
+    // Para HojaDatos
+    public function actionAceptarHojaDatos()
+    {
+        return $this->actionAceptarGenerico('app\models\HojaDatos');
+    }
+
+    public function actionRechazarHojaDatos()
+    {
+        return $this->actionRechazarGenerico('app\models\HojaDatos');
+    }
+
+    // Para CartaAceptacion
+    public function actionAceptarAceptacion()
+    {
+        return $this->actionAceptarGenerico('app\models\CartaAceptacion');
+    }
+
+    public function actionRechazarAceptacion()
+    {
+        return $this->actionRechazarGenerico('app\models\CartaAceptacion');
+    }
+
+    // Para Terminacion
+    public function actionAceptarTermino()
+    {
+        return $this->actionAceptarGenerico('app\models\CartaTermino');
+    }
+
+    public function actionRechazarTermino()
+    {
+        return $this->actionRechazarGenerico('app\models\CartaTermino');
+    }
     #public function behaviors()
     #{
     #    return [
