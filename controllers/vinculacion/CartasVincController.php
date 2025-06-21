@@ -206,7 +206,7 @@ class CartasVincController extends Controller
             throw new \yii\web\NotFoundHttpException('No se encontró la carta de aceptación.');
         }
 
-        return $this->render('/validar-aceptacion', [
+        return $this->render('validar-aceptacion', [
             'carta' => $carta,
             'idUsuario' => $idUsuario,
             'modelCartaAceptacion' => $carta // Pasamos el modelo para el formulario

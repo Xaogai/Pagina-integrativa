@@ -11,7 +11,7 @@ use app\components\Permisos;
 
 <div style="margin-top:20px;">
     <?php $form = ActiveForm::begin([
-        'action' => ['cartas-vinc/aceptar-datos'],
+        'action' => ['vinculacion/cartas-vinc/aceptar-hoja-datos'],
         'method' => 'post'
     ]); ?>
     <?= Html::hiddenInput('id', $idUsuario) ?>
