@@ -354,7 +354,7 @@ class CartasVincController extends Controller
 
     public function actionDatos()
     {
-        ||
+        $idUsuario = Yii::$app->session->get('user_id');
         
         $datos = HojaDatos::find()
         ->select([
