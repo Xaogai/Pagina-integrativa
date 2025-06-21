@@ -133,6 +133,12 @@ class Alumnos extends \yii\db\ActiveRecord
         return $this->hasOne(Grupos::className(), ['id_grupo' => 'id_grupo']);
     }
 
+    public function getUsuario()
+    {
+        return $this->hasOne(Usuarios::class, ['id_usuario' => 'id_usuario']);
+    }
+
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

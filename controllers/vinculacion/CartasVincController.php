@@ -346,8 +346,8 @@ protected function actionAceptarGenericoCompleto(
     $idUsuario = $request->post('id');
     
     $model = $modelClass::find()
-        ->innerJoinWith([$relationName => function($query) use ($idUsuario, $userRelation) {
-            $query->innerJoin($userRelation, "$userRelation.id_usuario = $relationName.id_usuario")
+        ->innerJoinWith([$relationName => function($query) use ($idUsuario, $userRelation, $relationName) {
+            $query->innerJoin($userRelation, "$userRelation.id_usuario = {$relationName}s.id_usuario")
                 ->andWhere(["$userRelation.id_usuario" => $idUsuario]);
         }])
         ->one();
@@ -378,8 +378,8 @@ protected function actionRechazarGenericoCompleto(
     $comentario = $request->post('comentario');
     
     $model = $modelClass::find()
-        ->innerJoinWith([$relationName => function($query) use ($idUsuario, $userRelation) {
-            $query->innerJoin($userRelation, "$userRelation.id_usuario = $relationName.id_usuario")
+        ->innerJoinWith([$relationName => function($query) use ($idUsuario, $userRelation, $relationName) {
+            $query->innerJoin($userRelation, "$userRelation.id_usuario = {$relationName}s.id_usuario")
                 ->andWhere(["$userRelation.id_usuario" => $idUsuario]);
         }])
         ->one();
