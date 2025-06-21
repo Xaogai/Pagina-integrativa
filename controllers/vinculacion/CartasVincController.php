@@ -329,7 +329,7 @@ public function actionRechazarGenerico($modelClass)
         'comentario_vinculacion',
         'alumno',
         'usuarios',
-        ['documento/index'],
+        ['/vinculacion'],
         'Registro rechazado correctamente.',
         'No se encontró el registro.'
     );
@@ -363,7 +363,7 @@ protected function actionAceptarGenericoCompleto(
         Yii::$app->session->setFlash('error', $errorMessage);
     }
     
-    return $this->redirect($redirectRoute);
+    return $this->redirect('/vinculacion');
 }
 
 /**
@@ -397,7 +397,7 @@ protected function actionRechazarGenericoCompleto(
         Yii::$app->session->setFlash('error', $errorMessage);
     }
     
-    return $this->redirect($redirectRoute);
+    return $this->redirect('/vinculacion');
 }
 
 
