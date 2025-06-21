@@ -22,7 +22,7 @@ use app\components\Permisos;
 
     <div id="form-rechazo" style="display:none; margin-top:10px;">
         <?php $form = ActiveForm::begin([
-            'action' => ['vinculacion/cartas-vinc/rechazar-datos'],
+            'action' => ['vinculacion/cartas-vinc/rechazar-hoja-datos'],
             'method' => 'post'
         ]); ?>
         <?= Html::hiddenInput('id', $idUsuario) ?>

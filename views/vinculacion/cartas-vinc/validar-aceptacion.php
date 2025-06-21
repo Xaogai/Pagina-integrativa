@@ -8,27 +8,22 @@ use app\components\Permisos;
 <h2>Validar Carta de Aceptación</h2>
 
 <iframe src="<?= Url::to(['/cartas-vinc/aceptacion', 'id' => $idUsuario]) ?>" width="100%" height="600px"></iframe>
+
 <div style="margin-top:20px;">
-    <?php if (Permisos::puedeEditar()): ?>
         <?php $form = ActiveForm::begin([
-            'action' => ['cartas-vinc/aceptar-aceptacion'],
+            'action' => ['vinculacion/cartas-vinc/aceptar-aceptacion'],
             'method' => 'post'
         ]); ?>
         <?= Html::hiddenInput('id', $idUsuario) ?>
-        <?= Html::submitButton('Aceptar', [
-            'class' => 'btn btn-success',
-            'disabled' => !Permisos::puedeEditar() // Opcional: deshabilita en lugar de ocultar
-        ]) ?>
+        <?= Html::submitButton('Aceptar', ['class' => 'btn btn-success']) ?>
         <?php ActiveForm::end(); ?>
 
         <button 
             class="btn btn-danger" 
             onclick="document.getElementById('form-rechazo').style.display='block'; this.style.display='none';"
-            <?= !Permisos::puedeEditar() ? 'disabled' : '' ?>
         >
             Rechazar
         </button>
-    <?php endif; ?>
 
     <?php if (Permisos::puedeEditar()): ?>
         <div id="form-rechazo" style="display:none; margin-top:10px;">
@@ -41,11 +36,9 @@ use app\components\Permisos;
                 'name' => 'comentario',
                 'required' => true
             ])->label('Motivo de rechazo') ?>
-            <?= Html::submitButton('Enviar Rechazo', [
-                'class' => 'btn btn-warning',
-                'disabled' => !Permisos::puedeEditar()
-            ]) ?>
+            <?= Html::submitButton('Enviar Rechazo', ['class' => 'btn btn-warning']) ?>
             <?php ActiveForm::end(); ?>
         </div>
     <?php endif; ?>
+
 </div>
