@@ -20,8 +20,15 @@ class CartaAceptacionController extends Controller
 
     public function actionDatosCartaAceptacion()
     {
+        $idUsuario = Yii::$app->session->get('user_id');
+        $alumno = Alumnos::find()
+        ->select(['id_alumno'])
+        ->where(['id_usuario' => $idUsuario])
+        ->one();
+
+        $idAlumno = $alumno ? $alumno->id_alumno : null;
+        //var_dump($idAlumno); exit;
         // Verificar sesión del alumno
-        $idAlumno = Yii::$app->session->get('user_id');
         if (!$idAlumno) {
             Yii::$app->session->setFlash('error', 'No se encontró la sesión del alumno.');
             return $this->redirect(['site/login']);
