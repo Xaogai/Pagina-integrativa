@@ -26,7 +26,11 @@ use app\components\Permisos;
             'method' => 'post'
         ]); ?>
         <?= Html::hiddenInput('id', $idUsuario) ?>
-        <?= $form->field($modelCartapresentacion, 'comentario_vinculacion')->textarea([
+        <?php 
+        // Verificar si la variable está definida, si no, crear nueva instancia
+        $model = isset($modelCartapresentacion) ? $modelCartapresentacion : new \app\models\CartaPresentacion();
+        ?>
+        <?= $form->field($model, 'comentario_vinculacion')->textarea([
             'name' => 'comentario',
             'required' => true
         ])->label('Motivo de rechazo') ?>
