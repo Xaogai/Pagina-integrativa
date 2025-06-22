@@ -81,7 +81,7 @@ if ($alumnoExiste) {
                         <li><a class="disabled-link">Carta de Presentación</a></li>
                     <?php endif; ?>
                     <?php if ($cartaPresentacionAceptada): ?>
-                        <li><a href="<?= Url::to(['practicas/terminacion']) ?>">Carta de Término</a></li>
+                        <li><a href="<?= Url::to(['carta-termino/datos-carta-termino']) ?>">Carta de Término</a></li>
                     <?php else: ?>
                         <li><a class="disabled-link">Carta de Término</a></li>
                     <?php endif; ?>
