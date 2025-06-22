@@ -16,44 +16,71 @@ class CartaPresentacionController extends Controller
     {
         $idUsuario = Yii::$app->session->get('user_id');
         $alumno = Alumnos::find()
-        ->select(['id_alumno'])
-        ->where(['id_usuario' => $idUsuario])
-        ->one();
+            ->where(['id_usuario' => $idUsuario])
+            ->one();
 
         $idAlumno = $alumno ? $alumno->id_alumno : null;
-        //var_dump($idAlumno); exit;
-        // Verificar sesión del alumno
+
         if (!$idAlumno) {
             Yii::$app->session->setFlash('error', 'No se encontró la sesión del alumno.');
-            return $this->redirect(['site/login']);
         }
 
-        // Buscar o crear modelo
-        $model = CartaPresentacion::findOne(['id_alumno' => $idAlumno]) ?? new CartaPresentacion();
+        // Verificamos si ya existe una carta de presentación
+        $cartaExistente = (new \yii\db\Query())
+            ->from('carta_presentacion')
+            ->where(['id_alumno' => $idAlumno])
+            ->one();
 
-        if ($model->load(Yii::$app->request->post())) {
-            // Obtener datos del alumno
-            $alumno = Alumnos::findOne($idAlumno);
-            if (!$alumno) {
-                Yii::$app->session->setFlash('error', 'Alumno no encontrado.');
-                return $this->refresh();
-            }
+        
+        $datosAceptacion = (new \yii\db\Query())
+            ->select(['fecha_inicio_servicio', 'fecha_termino_servicio'])
+            ->from('carta_aceptacion')
+            ->where(['id_alumno' => $idAlumno])
+            ->one();
 
-            // Asignar valores automáticos
-            $model->id_alumno = $alumno->id_alumno;
-            $model->id_semestre = $alumno->id_semestreactual;
-            $model->id_ciclo = $alumno->id_ciclo;
-            $model->status = CartaPresentacion::STATUS_EN_REVISION;
+        $fechaAceptacion = $datosAceptacion['fecha_inicio_servicio'] ?? null;
+        $fechaTermino = $datosAceptacion['fecha_termino_servicio'] ?? null;
 
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Carta guardada exitosamente.');
-                return $this->refresh();
+        // Insertamos el registro con todos los campos obligatorios
+        if (!$cartaExistente) {
+            // Insertamos el registro con fecha_insercion
+            $insertado = Yii::$app->db->createCommand()->insert('carta_presentacion', [
+                'id_alumno' => $idAlumno,
+                'id_semestre' => $alumno->id_semestreactual,
+                'id_ciclo' => $alumno->id_ciclo,
+                'status' => 'EN REVISION',
+                'id_formato' => 1,
+                'fecha_emision' => date('Y-m-d'),
+                'fecha_aceptacion' => $fechaAceptacion,
+                'fecha_termino' => $fechaTermino,
+                'fecha_insercion' => date('Y-m-d'),  // SOLO INSERT
+            ])->execute();
+
+            if ($insertado) {
+                Yii::$app->session->setFlash('success', 'Carta registrada exitosamente.');
             } else {
-                Yii::$app->session->setFlash('error', 'Error al guardar: '.print_r($model->errors, true));
+                Yii::$app->session->setFlash('error', 'Error al registrar la carta.');
+            }
+        } else {
+            // Actualizamos el registro sin modificar fecha_insercion
+            $actualizado = Yii::$app->db->createCommand()->update('carta_presentacion', [
+                'id_semestre' => $alumno->id_semestreactual,
+                'id_ciclo' => $alumno->id_ciclo,
+                'status' => 'EN REVISION',
+                'id_formato' => 1,
+                'fecha_emision' => date('Y-m-d'),
+                'fecha_aceptacion' => $fechaAceptacion,
+                'fecha_termino' => $fechaTermino,
+            ], 'id_alumno = :id_alumno', [':id_alumno' => $idAlumno])->execute();
+
+            if ($actualizado) {
+                Yii::$app->session->setFlash('success', 'Carta actualizada exitosamente.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Error al actualizar la carta.');
             }
         }
 
-        return $this->render('practicas/presentacion');
+        return $this->redirect(['practicas/presentacion']);
     }
 
     public function actionView($id)
