@@ -26,7 +26,7 @@ use app\components\Permisos;
             'method' => 'post'
         ]); ?>
         <?= Html::hiddenInput('id', $idUsuario) ?>
-        <?= $form->field($modelCartapresentacion, 'comentario_vinculacion')->textarea([
+        <?= $form->field($modelCartaTermino, 'comentario_vinculacion')->textarea([
             'name' => 'comentario',
             'required' => true
         ])->label('Motivo de rechazo') ?>
