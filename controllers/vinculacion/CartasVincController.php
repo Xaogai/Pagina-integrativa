@@ -277,8 +277,8 @@ class CartasVincController extends Controller
         }
         
         // Obtener la carta de TERMINACIÓN
-        $carta = CartaTerminacion::find()
-            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_terminacion.id_alumno')
+        $carta = CartaTermino::find()
+            ->innerJoin('alumnos', 'alumnos.id_alumno = carta_termino.id_alumno')
             ->innerJoin('usuarios', 'usuarios.id_usuario = alumnos.id_usuario')
             ->where(['usuarios.id_usuario' => $idUsuario])
             ->one();
