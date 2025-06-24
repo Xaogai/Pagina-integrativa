@@ -50,8 +50,8 @@ class CartaPresentacion extends \yii\db\ActiveRecord
     {
         return [
             [['status'], 'default', 'value' => null],
-            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo', 'id_carrera', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
-            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo', 'id_carrera'], 'integer'],
+            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo', 'fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'required'],
+            [['id_formato', 'id_alumno', 'id_semestre', 'id_ciclo'], 'integer'],
             [['status'], 'string'],
             [['fecha_emision', 'fecha_aceptacion', 'fecha_termino'], 'safe'],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
@@ -59,8 +59,7 @@ class CartaPresentacion extends \yii\db\ActiveRecord
             [['id_semestre'], 'exist', 'skipOnError' => true, 'targetClass' => Semestre::class, 'targetAttribute' => ['id_semestre' => 'id_semestre']],
             [['id_ciclo'], 'exist', 'skipOnError' => true, 'targetClass' => CicloEscolar::class, 'targetAttribute' => ['id_ciclo' => 'id_ciclo']],
             [['id_formato'], 'exist', 'skipOnError' => true, 'targetClass' => FondoCbt::class, 'targetAttribute' => ['id_formato' => 'id_fondo']],
-            [['id_carrera'], 'exist', 'skipOnError' => true, 'targetClass' => Carrera::class, 'targetAttribute' => ['id_carrera' => 'id_carrera']],
-        ];
+            ];
     }
 
     /**

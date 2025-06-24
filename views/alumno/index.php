@@ -29,14 +29,16 @@ $this->registerCssFile('@web/css/tabla_alumno.css');
                         <?= $hoja_datos ? Html::encode($hoja_datos->status) : 'No aplica' ?>
                     </td>
                     <td>
-                        <?= $hoja_datos ? 
-                            ($hoja_datos->comentario_vinculacion ? 
-                                Html::encode($hoja_datos->comentario_vinculacion) : 
-                                'No hay comentarios') : 
-                            'No aplica' ?>
+                        <?= $hoja_datos ?
+                            ($hoja_datos->status === 'ACEPTADO'
+                                ? 'Carta aceptada'
+                                : ($hoja_datos->comentario_vinculacion
+                                    ? Html::encode($hoja_datos->comentario_vinculacion)
+                                    : 'No hay comentarios'))
+                            : 'No aplica' ?>
                     </td>
                 </tr>
-                
+
                 <!-- Carta de Presentación -->
                 <tr class="datos">
                     <td>Presentación</td>
@@ -44,14 +46,16 @@ $this->registerCssFile('@web/css/tabla_alumno.css');
                         <?= $carta_presentacion ? Html::encode($carta_presentacion->status) : 'No aplica' ?>
                     </td>
                     <td>
-                        <?= $carta_presentacion ? 
-                            ($carta_presentacion->comentario_vinculacion ? 
-                                Html::encode($carta_presentacion->comentario_vinculacion) : 
-                                'No hay comentarios') : 
-                            'No aplica' ?>
+                        <?= $carta_presentacion ?
+                            ($carta_presentacion->status === 'ACEPTADO'
+                                ? 'Carta aceptada'
+                                : ($carta_presentacion->comentario_vinculacion
+                                    ? Html::encode($carta_presentacion->comentario_vinculacion)
+                                    : 'No hay comentarios'))
+                            : 'No aplica' ?>
                     </td>
                 </tr>
-                
+
                 <!-- Carta de Aceptación -->
                 <tr class="datos">
                     <td>Aceptación</td>
@@ -59,14 +63,16 @@ $this->registerCssFile('@web/css/tabla_alumno.css');
                         <?= $carta_aceptacion ? Html::encode($carta_aceptacion->status) : 'No aplica' ?>
                     </td>
                     <td>
-                        <?= $carta_aceptacion ? 
-                            ($carta_aceptacion->comentario_vinculacion ? 
-                                Html::encode($carta_aceptacion->comentario_vinculacion) : 
-                                'No hay comentarios') : 
-                            'No aplica' ?>
+                        <?= $carta_aceptacion ?
+                            ($carta_aceptacion->status === 'ACEPTADO'
+                                ? 'Carta aceptada'
+                                : ($carta_aceptacion->comentario_vinculacion
+                                    ? Html::encode($carta_aceptacion->comentario_vinculacion)
+                                    : 'No hay comentarios'))
+                            : 'No aplica' ?>
                     </td>
                 </tr>
-                
+
                 <!-- Carta de Término -->
                 <tr class="datos">
                     <td>Término</td>
@@ -74,11 +80,13 @@ $this->registerCssFile('@web/css/tabla_alumno.css');
                         <?= $carta_termino ? Html::encode($carta_termino->status) : 'No aplica' ?>
                     </td>
                     <td>
-                        <?= $carta_termino ? 
-                            ($carta_termino->comentario_vinculacion ? 
-                                Html::encode($carta_termino->comentario_vinculacion) : 
-                                'No hay comentarios') : 
-                            'No aplica' ?>
+                        <?= $carta_termino ?
+                            ($carta_termino->status === 'ACEPTADO'
+                                ? 'Carta aceptada'
+                                : ($carta_termino->comentario_vinculacion
+                                    ? Html::encode($carta_termino->comentario_vinculacion)
+                                    : 'No hay comentarios'))
+                            : 'No aplica' ?>
                     </td>
                 </tr>
             </tbody>

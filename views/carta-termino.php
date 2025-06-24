@@ -37,6 +37,9 @@ function fechaTraducida($fecha, $formato = 'php:j \d\e F \d\e Y') {
     </head>
     <body>
         <header>
+            <div style="text-align: center;">
+                <img src=<?= Html::encode($cartas[0]['logo'] ?? 'Logo no disponible') ?> style="width: 120px; height: auto;" alt="Logo">
+            </div>
             <div class="asunto">
                 <p>ASUNTO: CONSTANCIA DE COMPETENCIA LABORAL</p>
             </div>

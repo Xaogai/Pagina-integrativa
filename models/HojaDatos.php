@@ -18,7 +18,7 @@ use Yii;
  * @property string $fecha_emision
  * @property string $fecha_aceptacion
  * @property string $fecha_termino
- *
+ * @property string|null $comentario_vinculacion
  * @property Alumnos $alumno
  * @property CicloEscolar $ciclo
  * @property Empresa $empresa
@@ -52,7 +52,7 @@ class HojaDatos extends \yii\db\ActiveRecord
             [['status'], 'default', 'value' => null],
             [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'required'],
             [['id_alumno', 'id_empresa', 'id_semestre', 'id_ciclo', 'id_formato'], 'integer'],
-            [['status'], 'string'],
+            [['status', 'comentario_vinculacion'], 'string'],
             [['fecha_emision', 'fecha_aceptacion', 'fecha_termino','fecha_insercion', 'comentario_vinculacion'], 'safe'],
             ['status', 'in', 'range' => array_keys(self::optsStatus())],
             [['id_alumno'], 'exist', 'skipOnError' => true, 'targetClass' => Alumnos::class, 'targetAttribute' => ['id_alumno' => 'id_alumno']],
@@ -72,6 +72,7 @@ class HojaDatos extends \yii\db\ActiveRecord
             'id_hojadatos' => 'Id Hojadatos',
             'id_alumno' => 'Id Alumno',
             'id_empresa' => 'Id Empresa',
+            'comentario_vinculacion' => 'Comentario',
             'status' => 'Status',
             'id_semestre' => 'Id Semestre',
             'id_ciclo' => 'Id Ciclo',
