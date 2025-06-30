@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models;
+use app\models\FondoCbt;
+
 
 use Yii;
 

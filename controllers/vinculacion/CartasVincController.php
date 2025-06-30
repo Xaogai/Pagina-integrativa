@@ -267,7 +267,7 @@ class CartasVincController extends Controller
         ]);
     }
 
-    public function actionValidarTerminacion()
+    public function actionValidarTermino()
     {
         $request = Yii::$app->request;
         $idUsuario = $request->get('id', $request->post('id'));  

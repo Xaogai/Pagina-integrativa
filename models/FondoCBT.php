@@ -28,7 +28,7 @@ class FondoCBT extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'Fondo_CBT';
+        return 'fondo_cbt';
     }
 
     /**
